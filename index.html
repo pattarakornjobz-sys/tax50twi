@@ -10,6 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Sarabun',Arial,sans-serif}
 body{background:#f4f6f9;color:#333}
@@ -300,13 +301,6 @@ table.data-table tr:hover td{background:#f8fafc}
           <input type="number" id="certYearBE" min="2500" max="2700">
         </div>
         <div class="form-group">
-          <label>ประเภทการยื่น</label>
-          <select id="periodType" onchange="onPeriodTypeChange()">
-            <option value="yearly">รายปี (สรุปทั้งปี)</option>
-            <option value="monthly">รายเดือน (ยื่นเป็นรายเดือน)</option>
-          </select>
-        </div>
-        <div class="form-group" id="periodMonthWrap" style="display:none">
           <label>เดือนภาษี</label>
           <select id="periodMonth"></select>
         </div>
@@ -319,6 +313,7 @@ table.data-table tr:hover td{background:#f8fafc}
           </select>
         </div>
       </div>
+      <input type="hidden" id="periodType" value="monthly">
 
       <div style="margin-top:12px">
         <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#334155;cursor:pointer;width:fit-content">
@@ -460,6 +455,29 @@ table.data-table tr:hover td{background:#f8fafc}
 
   <!-- ============ TAB: REGISTRY / HISTORY ============ -->
   <div class="tab-panel" id="tabRegistry">
+    <div class="card">
+      <h3 style="font-size:15px;margin-bottom:6px">📥 นำเข้าทะเบียนจากไฟล์ Excel</h3>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px">อัปโหลดไฟล์ Excel แบบเดียวกับที่เคยใช้นำเข้าครั้งแรก (แต่ละชีตมีคอลัมน์ชื่อ/ที่อยู่/เลขผู้เสียภาษี) ระบบจะหาหัวตารางในแต่ละชีตให้อัตโนมัติ แล้วให้เลือกว่าแต่ละชีตเป็นบุคคลธรรมดาหรือนิติบุคคลก่อนนำเข้าจริง รายการที่เลขผู้เสียภาษีซ้ำกับที่มีอยู่แล้วจะถูก<strong>อัปเดตทับ</strong>ด้วยข้อมูลล่าสุดจากไฟล์ ไม่สร้างซ้ำซ้อน — ใช้ได้ทั้งนำเข้าครั้งแรกและอัปเดตเพิ่มเติมทีหลัง</p>
+      <div class="form-group" style="max-width:420px;margin-bottom:12px">
+        <label>เลือกไฟล์ Excel (.xlsx)</label>
+        <input type="file" id="importFileInput" accept=".xlsx,.xls" onchange="handleImportFileSelect(this)">
+      </div>
+      <div id="importSheetsSection" style="display:none">
+        <div style="overflow-x:auto;margin-bottom:12px">
+          <table class="data-table" id="importSheetsTable"></table>
+        </div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">
+          <button class="btn btn-outline" onclick="previewImportData()">👁️ ดูตัวอย่างก่อนนำเข้า</button>
+          <button class="btn btn-success" id="runImportBtn" onclick="runImport()" disabled>📥 ยืนยันนำเข้าทั้งหมด</button>
+        </div>
+        <div id="importPreviewInfo" style="font-size:12.5px;color:#475569;margin-bottom:8px"></div>
+        <div style="overflow-x:auto">
+          <table class="data-table" id="importPreviewTable"></table>
+        </div>
+        <div id="importResultInfo" style="margin-top:10px;font-size:13px;font-weight:600"></div>
+      </div>
+    </div>
+
     <div class="card">
       <h3 style="font-size:15px;margin-bottom:12px">🏢 ทะเบียนบริษัท/บุคคลธรรมดา</h3>
       <div class="form-group" style="margin-bottom:8px;max-width:420px">
@@ -659,6 +677,7 @@ const MONTHS_TH=['','มกราคม','กุมภาพันธ์','ม�
 const ORG_NAME='มูลนิธิส่งเสริมศิลปาชีพ ในสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง';
 const DEPARTMENTS=[{key:'khon',label:'โขนมูลนิธิ'},{key:'finance',label:'การเงิน'}];
 function deptLabel(key){return(DEPARTMENTS.find(d=>d.key===key)||{}).label||key||'';}
+function formatBookLabel(department,bookNo){return(bookNo===undefined||bookNo===null||bookNo==='')?'-':`${deptLabel(department)}${bookNo}`;}
 const PND_OPTIONS=[
   {v:'1',label:'(1) ภ.ง.ด.1ก'},{v:'2',label:'(2) ภ.ง.ด.1ก พิเศษ'},{v:'3',label:'(3) ภ.ง.ด.2'},
   {v:'4',label:'(4) ภ.ง.ด.3'},{v:'5',label:'(5) ภ.ง.ด.2ก'},{v:'6',label:'(6) ภ.ง.ด.3ก'},{v:'7',label:'(7) ภ.ง.ด.53'},
@@ -854,9 +873,7 @@ function buildMonthSelect(){
   const exportSel=document.getElementById('exportMonth');
   exportSel.innerHTML=MONTHS_TH.slice(1).map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
 }
-function onPeriodTypeChange(){
-  document.getElementById('periodMonthWrap').style.display=document.getElementById('periodType').value==='monthly'?'flex':'none';
-}
+
 
 // ============================================================
 // PAYEE (บริษัท/บุคคลธรรมดา) — ฟอร์ม + ทะเบียน
@@ -986,6 +1003,160 @@ function onCompanySearchInput(){
       el.addEventListener('mousedown',e=>{e.preventDefault();pickCompany(data[i]);box.style.display='none';});
     });
   },250);
+}
+
+// ============================================================
+// นำเข้าทะเบียนจากไฟล์ Excel (แบบเดียวกับที่เคยใช้ bulk import ครั้งแรก)
+// ============================================================
+let importSheetsConfig=[];
+function normTaxId(v){return v==null?'':String(v).replace(/\D/g,'');}
+function splitIndividualName(full){
+  full=(full||'').trim();
+  const PREFIXES=['นางสาว','นาง','นาย','เด็กชาย','เด็กหญิง','ดร.','ด.ช.','ด.ญ.'];
+  let prefix='',rest=full;
+  for(const p of PREFIXES){if(full.startsWith(p)){prefix=p;rest=full.slice(p.length).trim();break;}}
+  const idx=rest.indexOf(' ');
+  const first=idx===-1?rest:rest.slice(0,idx);
+  const last=idx===-1?'':rest.slice(idx+1).trim();
+  return{prefix,first,last};
+}
+function parseThaiAddressJS(addr){
+  addr=(addr||'').trim();
+  const out={house_no:'',moo:'',soi:'',junction:'',road:'',subdistrict:'',district:'',province:'',postal_code:''};
+  if(!addr)return out;
+  let m;
+  m=addr.match(/(\d{5})\s*$/);if(m){out.postal_code=m[1];addr=addr.slice(0,m.index).trim();}
+  m=addr.match(/(กรุงเทพมหานคร|กรุงเทพฯ|กทม\.?)\s*$/);
+  if(m){out.province='กรุงเทพมหานคร';addr=addr.slice(0,m.index).trim();}
+  else{m=addr.match(/(?:จ\.|จังหวัด)\s*(\S+)\s*$/);if(m){out.province=m[1];addr=addr.slice(0,m.index).trim();}}
+  m=addr.match(/(?:อ\.|อำเภอ|เขต)\s*(\S+)\s*$/);if(m){out.district=m[1];addr=addr.slice(0,m.index).trim();}
+  m=addr.match(/(?:ต\.|ตำบล|แขวง)\s*(\S+)\s*$/);if(m){out.subdistrict=m[1];addr=addr.slice(0,m.index).trim();}
+  m=addr.match(/(?:ถ\.|ถนน)\s*(\S+)\s*$/);if(m){out.road=m[1];addr=addr.slice(0,m.index).trim();}
+  m=addr.match(/(?:ซ\.|ซอย|ตรอก)\s*(\S+(?:\s+\d+)?)\s*$/);if(m){out.soi=m[1];addr=addr.slice(0,m.index).trim();}
+  m=addr.match(/(?:ม\.|หมู่)\s*(\S+)\s*$/);if(m){out.moo=m[1];addr=addr.slice(0,m.index).trim();}
+  out.house_no=addr.trim();
+  return out;
+}
+function detectSheetColumns(rows){
+  for(let r=0;r<Math.min(rows.length,10);r++){
+    const row=rows[r]||[];
+    for(let c=0;c<row.length;c++){
+      const cell=String(row[c]==null?'':row[c]);
+      if(cell.includes('เลขประจำตัวผู้เสียภาษี')||cell.includes('เลขผู้เสียภาษี')){
+        let nameCol=-1,altNameCol=-1,addressCol=-1;
+        for(let c2=0;c2<row.length;c2++){
+          const cell2=String(row[c2]==null?'':row[c2]);
+          if(cell2.includes('ที่อยู่'))addressCol=c2;
+          else if(cell2.includes('ชื่อ')){if(nameCol===-1)nameCol=c2;else if(altNameCol===-1)altNameCol=c2;}
+        }
+        if(nameCol!==-1)return{headerRow:r,taxIdCol:c,nameCol,altNameCol,addressCol};
+      }
+    }
+  }
+  return null;
+}
+async function handleImportFileSelect(input){
+  const file=input.files[0];
+  if(!file)return;
+  try{
+    const buf=await file.arrayBuffer();
+    const wb=XLSX.read(buf,{type:'array'});
+    importSheetsConfig=wb.SheetNames.map(name=>{
+      const ws=wb.Sheets[name];
+      const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:null});
+      const det=detectSheetColumns(rows);
+      if(!det)return{name,detected:false,type:'skip',rowCount:0,rows:[]};
+      let rowCount=0;
+      for(let r=det.headerRow+1;r<rows.length;r++){const row=rows[r]||[];if(row[det.taxIdCol]||row[det.nameCol])rowCount++;}
+      const guessType=/53/.test(name)?'juristic':'individual';
+      return{name,detected:true,type:guessType,rowCount,rows,...det};
+    });
+    renderImportSheetsUI();
+    document.getElementById('importSheetsSection').style.display='block';
+    document.getElementById('importPreviewTable').innerHTML='';
+    document.getElementById('importPreviewInfo').textContent='';
+    document.getElementById('importResultInfo').textContent='';
+    document.getElementById('runImportBtn').disabled=true;
+  }catch(err){showToast('อ่านไฟล์ Excel ไม่สำเร็จ: '+err.message,true);}
+}
+function renderImportSheetsUI(){
+  const tbody=importSheetsConfig.map((s,i)=>{
+    if(!s.detected){
+      return `<tr><td>${esc(s.name)}</td><td colspan="2" style="color:#94a3b8">ไม่พบคอลัมน์เลขผู้เสียภาษีในชีตนี้ — จะข้ามอัตโนมัติ</td></tr>`;
+    }
+    return `<tr>
+      <td>${esc(s.name)}</td>
+      <td>
+        <select onchange="importSheetsConfig[${i}].type=this.value">
+          <option value="individual" ${s.type==='individual'?'selected':''}>บุคคลธรรมดา</option>
+          <option value="juristic" ${s.type==='juristic'?'selected':''}>นิติบุคคล</option>
+          <option value="skip" ${s.type==='skip'?'selected':''}>ข้ามชีตนี้</option>
+        </select>
+      </td>
+      <td>${s.rowCount} แถว</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('importSheetsTable').innerHTML=`<thead><tr><th>ชื่อชีต</th><th>ประเภท</th><th>จำนวนแถวข้อมูล</th></tr></thead><tbody>${tbody}</tbody>`;
+}
+function parseSheetRows(cfg){
+  if(!cfg.detected||cfg.type==='skip')return[];
+  const out=[];
+  for(let r=cfg.headerRow+1;r<cfg.rows.length;r++){
+    const row=cfg.rows[r]||[];
+    const taxIdRaw=row[cfg.taxIdCol];
+    const nameRaw=row[cfg.nameCol];
+    const altNameRaw=cfg.altNameCol>=0?row[cfg.altNameCol]:null;
+    const addressRaw=cfg.addressCol>=0?row[cfg.addressCol]:null;
+    if(!taxIdRaw&&!nameRaw)continue;
+    const taxId=normTaxId(taxIdRaw);
+    if(!taxId||taxId.length!==13)continue;
+    let payload;
+    if(cfg.type==='individual'){
+      const{prefix,first,last}=splitIndividualName(String(nameRaw||''));
+      const display=`${prefix}${first} ${last}`.replace(/\s+/g,' ').trim()||String(nameRaw||'').trim();
+      payload={tax_id:taxId,payee_type:'individual',company_name:display,prefix,first_name:first,middle_name:'',last_name:last,branch:'',address:String(addressRaw||'').trim()};
+    }else{
+      const display=(altNameRaw?String(altNameRaw):String(nameRaw||'')).trim();
+      payload={tax_id:taxId,payee_type:'juristic',company_name:display,prefix:'',first_name:'',middle_name:'',last_name:'',branch:'สำนักงานใหญ่',address:String(addressRaw||'').trim()};
+    }
+    Object.assign(payload,parseThaiAddressJS(payload.address));
+    out.push(payload);
+  }
+  return out;
+}
+let importParsedRows=[];
+function previewImportData(){
+  let all=[];
+  importSheetsConfig.forEach(cfg=>{if(cfg.type!=='skip')all=all.concat(parseSheetRows(cfg));});
+  const seen=new Set();const deduped=[];
+  all.forEach(r=>{if(!seen.has(r.tax_id)){seen.add(r.tax_id);deduped.push(r);}});
+  importParsedRows=deduped;
+  document.getElementById('importPreviewInfo').textContent=`พบทั้งหมด ${all.length} แถว (ไม่ซ้ำเลขผู้เสียภาษีในไฟล์นี้ ${deduped.length} รายการ) — แสดงตัวอย่าง 15 แถวแรก`;
+  const head='<thead><tr><th>เลขผู้เสียภาษี</th><th>ประเภท</th><th>ชื่อ</th><th>ที่อยู่</th></tr></thead>';
+  const body=deduped.slice(0,15).map(r=>`<tr><td>${esc(r.tax_id)}</td><td>${r.payee_type==='individual'?'บุคคลธรรมดา':'นิติบุคคล'}</td><td>${esc(r.company_name)}</td><td>${esc(r.address)}</td></tr>`).join('');
+  document.getElementById('importPreviewTable').innerHTML=head+'<tbody>'+body+'</tbody>';
+  document.getElementById('runImportBtn').disabled=deduped.length===0;
+  if(!deduped.length)showToast('ไม่พบรายการที่นำเข้าได้ ลองตรวจสอบประเภทของแต่ละชีตอีกครั้ง',true);
+}
+async function runImport(){
+  const rows=importParsedRows;
+  if(!rows.length){showToast('ไม่มีข้อมูลให้นำเข้า กด "ดูตัวอย่างก่อนนำเข้า" ก่อน',true);return;}
+  if(!confirm(`ยืนยันนำเข้า ${rows.length} รายการเข้าทะเบียน?\n\nรายการที่มีเลขผู้เสียภาษีซ้ำกับที่มีอยู่แล้วจะถูกอัปเดตทับด้วยข้อมูลจากไฟล์นี้ (ไม่สร้างซ้ำซ้อน)`))return;
+  const btn=document.getElementById('runImportBtn');
+  btn.disabled=true;btn.textContent='⏳ กำลังนำเข้า...';
+  const CHUNK=200;
+  let success=0,failed=0;
+  for(let i=0;i<rows.length;i+=CHUNK){
+    const batch=rows.slice(i,i+CHUNK).map(r=>({...r,updated_at:new Date().toISOString()}));
+    const{error}=await sb.from('cert50_companies').upsert(batch,{onConflict:'tax_id'});
+    if(error){failed+=batch.length;console.error('import batch error',error);}else{success+=batch.length;}
+    document.getElementById('importResultInfo').textContent=`กำลังนำเข้า... สำเร็จ ${success} / ล้มเหลว ${failed} จากทั้งหมด ${rows.length}`;
+  }
+  btn.disabled=false;btn.textContent='📥 ยืนยันนำเข้าทั้งหมด';
+  document.getElementById('importResultInfo').innerHTML=failed?`⚠️ นำเข้าสำเร็จ ${success} รายการ, ล้มเหลว ${failed} รายการ (เปิด console ของเบราว์เซอร์เพื่อดูรายละเอียด error)`:`✅ นำเข้าสำเร็จทั้งหมด ${success} รายการ`;
+  showToast(failed?`นำเข้าเสร็จแต่มี ${failed} รายการล้มเหลว`:'นำเข้าทะเบียนสำเร็จทั้งหมด');
+  registryPage=1;
+  loadRegistryList();
 }
 
 let registryPage=1;
@@ -1291,7 +1462,7 @@ function buildCertHtml(state,agg,totals,effectiveCopyNo,isDuplicate){
         <div>${copyNo==='1'?'☑':'☐'} ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย ใช้แนบพร้อมกับแบบแสดงรายการภาษี)</div>
         <div>${copyNo==='2'?'☑':'☐'} ฉบับที่ 2 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย เก็บไว้เป็นหลักฐาน)</div>
       </div>
-      <div class="cert-booknos">${esc(deptLabel(state.department))}เล่มที่ <u>${esc(state.bookNo||'-')}</u>&nbsp;&nbsp;เลขที่ <u>${esc(state.certNo||'-')}</u></div>
+      <div class="cert-booknos">เล่มที่ <u>${esc(formatBookLabel(state.department,state.bookNo))}</u>&nbsp;&nbsp;เลขที่ <u>${esc(state.certNo||'-')}</u></div>
     </div>
 
     <div class="cert-frame">
@@ -1407,7 +1578,7 @@ async function requestCertNumber(){
   const row=Array.isArray(data)?data[0]:data;
   document.getElementById('certBook').value=row.book_no;
   document.getElementById('certNo').value=row.cert_no;
-  showToast(`ได้เลขที่เอกสาร ${deptLabel(department)} เล่มที่ ${row.book_no} เลขที่ ${row.cert_no}`);
+  showToast(`ได้เลขที่เอกสาร เล่มที่ ${formatBookLabel(department,row.book_no)} เลขที่ ${row.cert_no}`);
 }
 function onDepartmentChange(){
   localStorage.setItem('cert50_department',document.getElementById('departmentSelect').value);
@@ -1434,7 +1605,7 @@ async function loadCurrentCounter(){
   const{data,error}=await sb.from('cert50_number_counter').select('*').eq('year_be',yearBE).eq('department',department).maybeSingle();
   if(error){info.textContent='โหลดค่าปัจจุบันไม่สำเร็จ: '+error.message;return;}
   if(!data){info.textContent=`${deptLabel(department)} ปีภาษี ${yearBE} ยังไม่เคยขอเลขที่เอกสารเลย`;return;}
-  info.innerHTML=`ค่าปัจจุบันของ ${deptLabel(department)} ปี ${yearBE}: เล่มที่ <b>${data.book_no}</b> · เลขที่ล่าสุด <b>${data.last_no}</b> (ฉบับถัดไปจะได้เลขที่ ${data.last_no+1}) · จำนวนต่อเล่ม <b>${data.per_book}</b>`;
+  info.innerHTML=`ค่าปัจจุบันของ ${deptLabel(department)} ปี ${yearBE}: เล่มที่ <b>${formatBookLabel(department,data.book_no)}</b> · เลขที่ล่าสุด <b>${data.last_no}</b> (ฉบับถัดไปจะได้เลขที่ ${data.last_no+1}) · จำนวนต่อเล่ม <b>${data.per_book}</b>`;
 }
 async function resetCounter(){
   const yearBE=parseInt(document.getElementById('resetYearBE').value);
@@ -1443,7 +1614,7 @@ async function resetCounter(){
   const lastNo=parseInt(document.getElementById('resetLastNo').value)||0;
   const perBook=parseInt(document.getElementById('resetPerBook').value)||100;
   if(!yearBE){showToast('กรุณาระบุปีภาษีที่จะรีเซ็ต',true);return;}
-  if(!confirm(`ยืนยันตั้งค่าตัวนับของ ${deptLabel(department)} ปีภาษี ${yearBE} เป็น เล่มที่ ${bookNo} / เลขที่ล่าสุด ${lastNo}?\n\nกรุณาตรวจสอบประวัติก่อน เพื่อป้องกันเลขซ้ำ`))return;
+  if(!confirm(`ยืนยันตั้งค่าตัวนับของ ${deptLabel(department)} ปีภาษี ${yearBE} เป็น เล่มที่ ${formatBookLabel(department,bookNo)} / เลขที่ล่าสุด ${lastNo}?\n\nกรุณาตรวจสอบประวัติก่อน เพื่อป้องกันเลขซ้ำ`))return;
   const{error}=await sb.from('cert50_number_counter').upsert({year_be:yearBE,department,book_no:bookNo,last_no:lastNo,per_book:perBook,updated_at:new Date().toISOString()},{onConflict:'year_be,department'});
   if(error){showToast('รีเซ็ตไม่สำเร็จ: '+error.message,true);return;}
   showToast('ตั้งค่าตัวนับเลขที่เอกสารสำเร็จ');
@@ -1462,10 +1633,10 @@ async function issueAndSaveCert(){
 
   if(editingIssueId){
     if(!operator){showToast('กรุณากรอกชื่อผู้แก้ไข ก่อนบันทึกการแก้ไข (ใช้สำหรับตรวจสอบย้อนหลัง)',true);document.getElementById('operatorName').focus();return;}
-    if(!confirm(`ยืนยันบันทึกการแก้ไขฉบับ เล่มที่ ${state.bookNo} เลขที่ ${state.certNo}? การแก้ไขนี้จะถูกบันทึกลงประวัติตรวจสอบ`))return;
+    if(!confirm(`ยืนยันบันทึกการแก้ไขฉบับ เล่มที่ ${formatBookLabel(state.department,state.bookNo)} เลขที่ ${state.certNo}? การแก้ไขนี้จะถูกบันทึกลงประวัติตรวจสอบ`))return;
   }else{
     if(!state.bookNo||!state.certNo){showToast('กรุณากดปุ่ม "ขอเลขที่เอกสาร" ก่อนบันทึกการออกหนังสือ',true);return;}
-    if(!confirm(`ยืนยันบันทึกการออกหนังสือรับรอง เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} ให้ ${state.displayName}? การบันทึกนี้ถาวรและจะถูกเก็บในประวัติ`))return;
+    if(!confirm(`ยืนยันบันทึกการออกหนังสือรับรอง เล่มที่ ${formatBookLabel(state.department,state.bookNo)} เลขที่ ${state.certNo} ให้ ${state.displayName}? การบันทึกนี้ถาวรและจะถูกเก็บในประวัติ`))return;
   }
 
   const agg=aggregateByStatRow(items);
@@ -1506,13 +1677,13 @@ async function issueAndSaveCert(){
     const{data:beforeRow}=await sb.from('cert50_company_issues').select('*').eq('id',editingIssueId).single();
     const updatePayload={...basePayload,updated_at:new Date().toISOString(),last_edited_by:operator,last_edited_at:new Date().toISOString(),edited_count:((beforeRow&&beforeRow.edited_count)||0)+1};
     const{error}=await sb.from('cert50_company_issues').update(updatePayload).eq('id',editingIssueId);
-    if(error){showToast(`บันทึกการแก้ไขไม่สำเร็จ (เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} — ${state.displayName}): ${error.message}`,true);return;}
+    if(error){showToast(`บันทึกการแก้ไขไม่สำเร็จ (เล่มที่ ${formatBookLabel(state.department,state.bookNo)} เลขที่ ${state.certNo} — ${state.displayName}): ${error.message}`,true);return;}
     await sb.from('cert50_company_issues_audit').insert({issue_id:editingIssueId,changed_by:operator||'ไม่ระบุ',note:'แก้ไขข้อมูลผ่านหน้าออกหนังสือ',before_snapshot:beforeRow||null,after_snapshot:{...(beforeRow||{}),...updatePayload}});
     showToast('บันทึกการแก้ไขสำเร็จ');
   }else{
     const issuePayload={...basePayload,book_no:parseInt(state.bookNo),cert_no:parseInt(state.certNo),status:'issued',created_by:operator||null};
     const{error}=await sb.from('cert50_company_issues').insert(issuePayload);
-    if(error){showToast(`บันทึกการออกหนังสือไม่สำเร็จ (เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} — ${state.displayName}): ${error.message}`,true);return;}
+    if(error){showToast(`บันทึกการออกหนังสือไม่สำเร็จ (เล่มที่ ${formatBookLabel(state.department,state.bookNo)} เลขที่ ${state.certNo} — ${state.displayName}): ${error.message}`,true);return;}
     showToast(`บันทึกการออกหนังสือรับรองสำเร็จ: ${state.displayName}`);
   }
 
@@ -1535,8 +1706,6 @@ async function loadIssueForEdit(id){
   document.getElementById('departmentSelect').value=data.department||'khon';
   document.getElementById('departmentSelect').disabled=true;
   document.getElementById('certYearBE').value=data.year_be;
-  document.getElementById('periodType').value=data.period_type;
-  onPeriodTypeChange();
   if(data.period_month)document.getElementById('periodMonth').value=data.period_month;
   document.getElementById('certCopyNo').value=data.copy_no||'1';
   document.getElementById('includeDuplicate').checked=!!data.include_duplicate;
@@ -1558,7 +1727,7 @@ async function loadIssueForEdit(id){
   recalcItemsTotals();
 
   document.getElementById('editBanner').style.display='flex';
-  document.getElementById('editBannerText').textContent=`✏️ กำลังแก้ไขฉบับ ${deptLabel(data.department)} เล่มที่ ${data.book_no} เลขที่ ${data.cert_no} (ออกเมื่อ ${data.cert_day||''}/${data.cert_month||''}/${data.cert_year_be||''}) — กรอกชื่อผู้แก้ไขด้านบนก่อนบันทึก`;
+  document.getElementById('editBannerText').textContent=`✏️ กำลังแก้ไขฉบับ เล่มที่ ${formatBookLabel(data.department,data.book_no)} เลขที่ ${data.cert_no} (ออกเมื่อ ${data.cert_day||''}/${data.cert_month||''}/${data.cert_year_be||''}) — กรอกชื่อผู้แก้ไขด้านบนก่อนบันทึก`;
   document.getElementById('issueSaveBtn').textContent='💾 บันทึกการแก้ไข';
   document.getElementById('requestNumberBtn').disabled=true;
   switchTab('issue');
@@ -1631,7 +1800,7 @@ async function showCompanyHistory(companyId,name,taxId){
     <td>${r.year_be}</td>
     <td>${r.period_type==='monthly'?('เดือน '+MONTHS_TH[r.period_month]):'รายปี'}</td>
     <td>${esc((PND_OPTIONS.find(p=>p.v===r.pnd_type)||{}).label||r.pnd_type)}</td>
-    <td>${r.book_no}/${r.cert_no}</td>
+    <td>${formatBookLabel(r.department,r.book_no)}/${r.cert_no}</td>
     <td style="text-align:right">${money(r.total_income)}</td>
     <td style="text-align:right">${money(r.total_tax)}</td>
     <td><span class="badge ${r.status==='voided'?'badge-voided':'badge-issued'}">${r.status==='voided'?'ยกเลิกแล้ว':'ออกแล้ว'}</span></td>
@@ -1762,7 +1931,7 @@ async function loadAllIssuesList(){
   const totalPages=Math.max(1,Math.ceil((count||data.length)/ALL_ISSUES_PAGE_SIZE));
   document.getElementById('allIssuesCount').textContent=q?`พบ ${count} รายการที่ตรงกับ "${q}"`:`ทั้งหมด ${count} รายการ`;
   tbody.innerHTML=data.map(r=>`<tr>
-    <td style="white-space:nowrap">${r.book_no}/${r.cert_no}</td>
+    <td style="white-space:nowrap">${formatBookLabel(r.department,r.book_no)}/${r.cert_no}</td>
     <td style="white-space:nowrap">${esc(deptLabel(r.department))}</td>
     <td style="white-space:nowrap">${r.cert_day||''}/${r.cert_month||''}/${r.cert_year_be||''}</td>
     <td>${esc(r.company_name_snapshot)}</td>
