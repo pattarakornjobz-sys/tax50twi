@@ -23,7 +23,7 @@ body{background:#f4f6f9;color:#333}
 .app-container{padding:76px 16px 40px;max-width:1180px;margin:0 auto}
 .card{background:#fff;padding:20px 24px;border-radius:8px;box-shadow:0 1px 3px rgba(0,0,0,.05);margin-bottom:20px}
 h1{font-size:22px;color:#1e293b;margin-bottom:6px}
-.page-sub{color:#64748b;font-size:13.5px;margin-bottom:20px}
+.page-sub{color:#64748b;font-size:13.5px;margin-bottom:14px}
 .tab-bar{display:flex;gap:4px;margin-bottom:18px;border-bottom:2px solid #e2e8f0;overflow-x:auto}
 .tab-btn{padding:10px 16px;font-size:13.5px;font-weight:600;color:#64748b;background:none;border:none;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;font-family:'Sarabun',sans-serif;white-space:nowrap}
 .tab-btn.active{color:#3b82f6;border-bottom-color:#3b82f6}
@@ -49,6 +49,8 @@ h1{font-size:22px;color:#1e293b;margin-bottom:6px}
 .pnd-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:12px}
 .pnd-opt{display:flex;align-items:center;gap:6px;font-size:13px;cursor:pointer}
 .pnd-opt input{cursor:pointer}
+.radio-inline{display:flex;gap:18px;align-items:center;background:#f8fafc;border:1px solid #e2e8f0;border-radius:6px;padding:10px 14px}
+.radio-inline label{display:flex;align-items:center;gap:6px;font-size:13.5px;font-weight:600;color:#334155;cursor:pointer}
 .upload-zone{border:2px dashed #cbd5e1;border-radius:8px;padding:14px;text-align:center;cursor:pointer;background:#f8fafc;min-height:80px;display:flex;align-items:center;justify-content:center;flex-direction:column}
 .upload-zone:hover{border-color:#3b82f6;background:#eff6ff}
 .upload-zone.has-img{padding:8px}
@@ -61,6 +63,7 @@ h1{font-size:22px;color:#1e293b;margin-bottom:6px}
 .be-date-label{font-size:10.5px;color:#94a3b8}
 .note-box{background:#eff6ff;border:1px solid #bfdbfe;border-radius:8px;padding:10px 14px;font-size:12.5px;color:#1e40af;margin-bottom:16px;line-height:1.6}
 .warn-box{background:#fff7ed;border:1px solid #fdba74;border-radius:8px;padding:10px 14px;font-size:12.5px;color:#9a3412;margin-bottom:16px;line-height:1.6}
+.edit-banner{display:none;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;background:#fef9c3;border:1px solid #fde047;border-radius:8px;padding:10px 14px;margin-bottom:16px;font-size:13px;color:#713f12}
 .toast-wrap{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;flex-direction:column;gap:8px}
 .toast{background:#1e293b;color:#fff;padding:10px 16px;border-radius:6px;font-size:13px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 12px rgba(0,0,0,.2);animation:fadeIn .2s ease}
 .toast.error{background:#dc2626}
@@ -78,11 +81,10 @@ table.data-table tr:hover td{background:#f8fafc}
 .search-results .opt{padding:9px 12px;font-size:13px;cursor:pointer;border-bottom:1px solid #f1f5f9}
 .search-results .opt:hover{background:#eff6ff}
 .search-results .opt-empty{padding:10px;color:#94a3b8;font-size:13px;cursor:default}
-.income-table{width:100%;border-collapse:collapse;font-size:12.5px}
-.income-table th{background:#f1f5f9;padding:6px 8px;text-align:left;font-size:11px}
-.income-table td{padding:4px 6px;border-bottom:1px solid #f1f5f9}
-.income-table input{width:100%;padding:5px 6px;border:1px solid #cbd5e1;border-radius:4px;font-size:12.5px;font-family:'Sarabun',sans-serif}
-.income-table td.amt-cell input{text-align:right}
+.item-table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:920px}
+.item-table th{background:#f1f5f9;padding:6px 8px;text-align:left;font-size:10.8px}
+.item-table td{padding:4px 6px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+.item-table input,.item-table select{width:100%;padding:5px 6px;border:1px solid #cbd5e1;border-radius:4px;font-size:12.5px;font-family:'Sarabun',sans-serif}
 .stat-strip{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px}
 .stat-box{flex:1;min-width:150px;background:#fff;border:1px solid #e2e8f0;border-radius:8px;padding:14px 16px}
 .stat-box .lbl{font-size:11.5px;color:#94a3b8;text-transform:uppercase;letter-spacing:.3px;margin-bottom:4px}
@@ -96,7 +98,8 @@ table.data-table tr:hover td{background:#f8fafc}
 
 /* ===== ตัวเอกสาร 50 ทวิ (พรีวิว + capture เป็น PDF) ===== */
 .cert-preview-wrap{background:#94a3b8;padding:24px;border-radius:8px;overflow-x:auto}
-.cert-page{width:190mm;min-height:270mm;margin:0 auto;background:#fff;padding:8mm;font-size:11.5px;color:#000;line-height:1.5}
+.cert-page{width:190mm;min-height:270mm;margin:0 auto;background:#fff;padding:8mm;font-size:11.5px;color:#000;line-height:1.5;position:relative}
+.cert-copy-badge{position:absolute;top:6mm;right:8mm;font-size:11px;font-weight:700;color:#b91c1c;border:1px solid #b91c1c;padding:1px 10px;border-radius:3px}
 .cert-toprow{display:flex;justify-content:space-between;align-items:flex-start;font-size:11px;margin-bottom:4px}
 .cert-copy-labels div{margin-bottom:2px}
 .cert-booknos{text-align:right;white-space:nowrap}
@@ -159,43 +162,123 @@ table.data-table tr:hover td{background:#f8fafc}
 
 <div class="app-container" id="mainApp" style="display:none">
   <h1>📜 ออกหนังสือรับรองการหักภาษี ณ ที่จ่าย (50 ทวิ)</h1>
-  <p class="page-sub">สำหรับออกให้บริษัท/นิติบุคคล/คู่ค้าของหน่วยงานย่อย — แบบฟอร์มเดียวกับส่วนกลาง พร้อมทะเบียนบริษัท เลขที่เอกสารรันอัตโนมัติ และใช้ลายเซ็น/ตราประทับชุดเดียวกับส่วนกลาง</p>
+  <p class="page-sub">สำหรับออกให้บริษัท/นิติบุคคล/บุคคลธรรมดาคู่ค้าของหน่วยงานย่อย — ใช้ระบบออนไลน์ร่วมกัน รันเลขที่เอกสารไม่ซ้ำแม้ออกพร้อมกันหลายเครื่อง</p>
+
+  <div class="form-group" style="max-width:360px;margin-bottom:16px">
+    <label>ชื่อผู้บันทึก/แก้ไข (เก็บไว้ตรวจสอบย้อนหลัง)</label>
+    <input type="text" id="operatorName" placeholder="ชื่อผู้ปฏิบัติงาน" oninput="localStorage.setItem('cert50_operator_name',this.value)">
+  </div>
 
   <div class="tab-bar">
     <button class="tab-btn active" id="tabBtnIssue" onclick="switchTab('issue')">📜 ออกหนังสือรับรอง</button>
     <button class="tab-btn" id="tabBtnRegistry" onclick="switchTab('registry')">🏢 ทะเบียนบริษัท/ประวัติ</button>
-    <button class="tab-btn" id="tabBtnSummary" onclick="switchTab('summary')">📊 สรุปผลการออกหนังสือ</button>
+    <button class="tab-btn" id="tabBtnSummary" onclick="switchTab('summary')">📊 สรุปผล/ส่งออกไฟล์</button>
     <button class="tab-btn" id="tabBtnSetup" onclick="switchTab('setup')">⚙️ ตั้งค่า (ใช้ร่วมกับส่วนกลาง)</button>
   </div>
 
   <!-- ============ TAB: ISSUE ============ -->
   <div class="tab-panel active" id="tabIssue">
 
+    <div class="edit-banner" id="editBanner">
+      <span id="editBannerText"></span>
+      <button class="btn btn-outline" onclick="cancelEdit()">✖ ยกเลิกการแก้ไข / ออกฉบับใหม่แทน</button>
+    </div>
+
     <div class="card">
-      <h3 style="font-size:15px;margin-bottom:14px">1. เลือก/เพิ่มบริษัทคู่ค้า</h3>
-      <div class="form-grid">
-        <div class="form-group search-box">
-          <label>ค้นหาด้วยเลขผู้เสียภาษี หรือ ชื่อบริษัท</label>
-          <input type="text" id="companySearch" placeholder="พิมพ์เลขผู้เสียภาษี 13 หลัก หรือ ชื่อบริษัท..." oninput="onCompanySearchInput()" onfocus="onCompanySearchInput()">
+      <h3 style="font-size:15px;margin-bottom:14px">1. เลือก/เพิ่มผู้ถูกหักภาษี</h3>
+      <div class="form-grid full" style="margin-bottom:14px">
+        <div class="form-group search-box full">
+          <label>ค้นหาด้วยเลขผู้เสียภาษี หรือ ชื่อ/ชื่อบริษัท</label>
+          <input type="text" id="companySearch" placeholder="พิมพ์เลขผู้เสียภาษี 13 หลัก หรือ ชื่อ..." oninput="onCompanySearchInput()" onfocus="onCompanySearchInput()">
           <div class="search-results" id="companySearchResults"></div>
         </div>
+      </div>
+
+      <div class="radio-inline" style="margin-bottom:14px">
+        <label><input type="radio" name="payeeType" id="payeeType_juristic" value="juristic" checked onchange="togglePayeeType()"> นิติบุคคล / บริษัท</label>
+        <label><input type="radio" name="payeeType" id="payeeType_individual" value="individual" onchange="togglePayeeType()"> บุคคลธรรมดา</label>
+      </div>
+
+      <div class="form-grid" style="margin-bottom:14px">
         <div class="form-group">
           <label>เลขประจำตัวผู้เสียภาษี (13 หลัก)</label>
           <input type="text" id="companyTaxId" maxlength="13" placeholder="0000000000000">
         </div>
-        <div class="form-group full">
-          <label>ชื่อบริษัท / นิติบุคคล</label>
-          <input type="text" id="companyName" placeholder="ชื่อบริษัทเต็ม">
-        </div>
-        <div class="form-group full">
-          <label>ที่อยู่</label>
-          <input type="text" id="companyAddress" placeholder="เลขที่ ถนน แขวง เขต จังหวัด">
+        <div class="form-group" id="branchWrap">
+          <label>สาขา</label>
+          <input type="text" id="branchInput" placeholder="เช่น สำนักงานใหญ่">
         </div>
       </div>
+
+      <div id="juristicFieldsWrap" class="form-grid full" style="margin-bottom:14px">
+        <div class="form-group full">
+          <label>ชื่อนิติบุคคล</label>
+          <input type="text" id="juristicNameInput" placeholder="ชื่อบริษัท/นิติบุคคลเต็ม">
+        </div>
+      </div>
+
+      <div id="individualFieldsWrap" class="form-grid cols-4" style="display:none;margin-bottom:14px">
+        <div class="form-group">
+          <label>คำนำหน้า</label>
+          <input type="text" id="prefixInput" placeholder="นาย/นาง/นางสาว">
+        </div>
+        <div class="form-group">
+          <label>ชื่อ</label>
+          <input type="text" id="firstNameInput" placeholder="ชื่อ">
+        </div>
+        <div class="form-group">
+          <label>ชื่อกลาง (ถ้ามี)</label>
+          <input type="text" id="middleNameInput" placeholder="ชื่อกลาง">
+        </div>
+        <div class="form-group">
+          <label>นามสกุล</label>
+          <input type="text" id="lastNameInput" placeholder="นามสกุล">
+        </div>
+      </div>
+
+      <div class="form-grid cols-4">
+        <div class="form-group">
+          <label>เลขที่</label>
+          <input type="text" id="houseNoInput" placeholder="เลขที่">
+        </div>
+        <div class="form-group">
+          <label>หมู่ที่</label>
+          <input type="text" id="mooInput" placeholder="หมู่ที่">
+        </div>
+        <div class="form-group">
+          <label>ตรอก/ซอย</label>
+          <input type="text" id="soiInput" placeholder="ตรอก/ซอย">
+        </div>
+        <div class="form-group">
+          <label>แยก</label>
+          <input type="text" id="junctionInput" placeholder="แยก">
+        </div>
+        <div class="form-group">
+          <label>ถนน</label>
+          <input type="text" id="roadInput" placeholder="ถนน">
+        </div>
+        <div class="form-group">
+          <label>แขวง/ตำบล</label>
+          <input type="text" id="subdistrictInput" placeholder="แขวง/ตำบล">
+        </div>
+        <div class="form-group">
+          <label>เขต/อำเภอ</label>
+          <input type="text" id="districtInput" placeholder="เขต/อำเภอ">
+        </div>
+        <div class="form-group">
+          <label>จังหวัด</label>
+          <input type="text" id="provinceInput" placeholder="จังหวัด">
+        </div>
+        <div class="form-group">
+          <label>รหัสไปรษณีย์</label>
+          <input type="text" id="postalCodeInput" maxlength="5" placeholder="รหัสไปรษณีย์">
+        </div>
+      </div>
+
       <div style="margin-top:12px;display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-        <button class="btn btn-outline" onclick="saveCompany()">💾 บันทึกลงทะเบียนบริษัท</button>
-        <button class="btn btn-outline" onclick="clearCompanyForm()">🧹 ล้างฟอร์ม / เพิ่มบริษัทใหม่</button>
-        <span id="companyPickedNote" style="font-size:12px;color:#16a34a;display:none">✓ กำลังใช้ข้อมูลจากทะเบียน — แก้ไขแล้วกด "บันทึก" เพื่ออัปเดตทะเบียน</span>
+        <button class="btn btn-outline" onclick="saveCompany()">💾 บันทึกลงทะเบียน</button>
+        <button class="btn btn-outline" onclick="clearCompanyForm()">🧹 ล้างฟอร์ม / เพิ่มรายใหม่</button>
+        <span id="companyPickedNote" style="font-size:12px;color:#16a34a;display:none">✓ กำลังใช้ข้อมูลจากทะเบียน — แก้ไขแล้วกด "บันทึกลงทะเบียน" เพื่ออัปเดต</span>
       </div>
     </div>
 
@@ -225,6 +308,13 @@ table.data-table tr:hover td{background:#f8fafc}
             <option value="3">ทั้ง 2 ฉบับ (ออกฉบับที่ 1 และ 2 พร้อมกัน)</option>
           </select>
         </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;font-weight:600;color:#334155;cursor:pointer;width:fit-content">
+          <input type="checkbox" id="includeDuplicate" style="width:16px;height:16px;cursor:pointer">
+          พิมพ์ "สำเนา" เพิ่มอีกชุดของทุกฉบับที่เลือก (เช่น เลือกทั้ง 2 ฉบับ + ติ๊กนี้ = พิมพ์รวม 4 ใบ)
+        </label>
       </div>
 
       <div style="margin-top:14px">
@@ -265,11 +355,23 @@ table.data-table tr:hover td{background:#f8fafc}
     </div>
 
     <div class="card">
-      <h3 style="font-size:15px;margin-bottom:6px">3. รายการเงินได้ที่จ่ายและภาษีที่หักนำส่ง</h3>
-      <p style="font-size:12px;color:#64748b;margin-bottom:10px">กรอกเฉพาะแถวที่มีการจ่ายจริง แถวที่เว้นว่างจะไม่แสดงจำนวนเงินในเอกสาร (ยอดรวมคำนวณอัตโนมัติ) — ถ้ากรอกจำนวนเงินในข้อ 6 "อื่นๆ" ต้องระบุประเภทเงินได้ในช่องที่ปรากฏใต้ข้อ 6 ด้วยเสมอ</p>
+      <h3 style="font-size:15px;margin-bottom:6px">3. รายการเงินได้ที่จ่ายและภาษีที่หักนำส่ง (รายรายการ)</h3>
+      <p style="font-size:12px;color:#64748b;margin-bottom:10px">เพิ่มทีละรายการตามที่จ่ายจริงแต่ละครั้ง (แต่ละแถวมีวันที่จ่ายของตัวเอง) — ระบบจะรวมยอดตามหมวดในแบบให้อัตโนมัติสำหรับพิมพ์หนังสือรับรอง และใช้รายการนี้ส่งออกไฟล์ยื่นกรมสรรพากรรายเดือนได้ด้วย ถ้าเลือกหมวด "6. อื่นๆ" ต้องระบุประเภทเงินได้ในช่องที่ปรากฏด้วยเสมอ</p>
       <div style="overflow-x:auto">
-        <table class="income-table" id="incomeTable"></table>
+        <table class="item-table">
+          <thead><tr>
+            <th style="width:12%">วันที่จ่าย</th>
+            <th style="width:18%">ประเภทเงินได้ (สำหรับยื่นกรมสรรพากร)</th>
+            <th style="width:22%">หมวดในแบบ 50 ทวิ</th>
+            <th style="width:10%">อัตราภาษี (%)</th>
+            <th style="width:14%">จำนวนเงิน (บาท)</th>
+            <th style="width:14%">ภาษีหักนำส่ง (บาท)</th>
+            <th style="width:10%"></th>
+          </tr></thead>
+          <tbody id="incomeItemsBody"></tbody>
+        </table>
       </div>
+      <button class="btn btn-outline" style="margin-top:10px" onclick="addIncomeItemRow()">➕ เพิ่มรายการ</button>
       <div style="margin-top:10px;font-size:13px;font-weight:600;color:#1e293b">
         รวมเงินที่จ่าย: <span id="sumIncome">0.00</span> บาท &nbsp;|&nbsp; รวมภาษีที่หักนำส่ง: <span id="sumTax">0.00</span> บาท
       </div>
@@ -277,7 +379,7 @@ table.data-table tr:hover td{background:#f8fafc}
 
     <div class="card">
       <h3 style="font-size:15px;margin-bottom:6px">4. เลขที่เอกสาร</h3>
-      <div class="note-box" style="margin-bottom:12px">การรันเลข: ระบบจะออก <b>เล่มที่/เลขที่</b> ให้อัตโนมัติแบบไม่ซ้ำกัน โดยเริ่มเลขที่ 1 ใหม่ทุกต้นปีภาษี และจะขึ้นเล่มใหม่อัตโนมัติเมื่อครบจำนวนต่อเล่มที่ตั้งไว้ (ค่าเริ่มต้น 100 ฉบับ/เล่ม) กด "ขอเลขที่เอกสาร" เมื่อพร้อมออกจริงเท่านั้น เพราะแต่ละครั้งที่กดจะกินเลขไป 1 หมายเลขและย้อนกลับไม่ได้ — ปุ่ม "ดูตัวอย่าง" ไม่กินเลข ใช้ตรวจสอบก่อนได้เสมอ</div>
+      <div class="note-box" style="margin-bottom:12px">การรันเลข: ระบบจะออก <b>เล่มที่/เลขที่</b> ให้อัตโนมัติแบบไม่ซ้ำกัน (ล็อกกันชนกันแม้กดพร้อมกันหลายเครื่อง) โดยเริ่มเลขที่ 1 ใหม่ทุกต้นปีภาษี และขึ้นเล่มใหม่อัตโนมัติเมื่อครบจำนวนต่อเล่ม (ค่าเริ่มต้น 100 ฉบับ/เล่ม) กด "ขอเลขที่เอกสาร" เมื่อพร้อมออกจริงเท่านั้น เพราะแต่ละครั้งที่กดจะกินเลขไป 1 หมายเลขและย้อนกลับไม่ได้ — ปุ่ม "ดูตัวอย่าง" ไม่กินเลข</div>
       <div class="form-grid cols-3">
         <div class="form-group">
           <label>เล่มที่</label>
@@ -289,18 +391,18 @@ table.data-table tr:hover td{background:#f8fafc}
         </div>
         <div class="form-group">
           <label>&nbsp;</label>
-          <button class="btn btn-outline" onclick="requestCertNumber()">🎫 ขอเลขที่เอกสาร (ใช้เมื่อพร้อมออกจริง)</button>
+          <button class="btn btn-outline" id="requestNumberBtn" onclick="requestCertNumber()">🎫 ขอเลขที่เอกสาร (ใช้เมื่อพร้อมออกจริง)</button>
         </div>
       </div>
       <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap">
         <button class="btn btn-primary" onclick="previewCert()">👁️ ดูตัวอย่างหนังสือ</button>
-        <button class="btn btn-success" onclick="issueAndSaveCert()">✅ บันทึกการออกหนังสือ (ถาวร)</button>
+        <button class="btn btn-success" id="issueSaveBtn" onclick="issueAndSaveCert()">✅ บันทึกการออกหนังสือ (ถาวร)</button>
       </div>
 
       <div style="margin-top:16px;padding-top:14px;border-top:1px dashed #cbd5e1">
         <button class="btn btn-outline" onclick="toggleResetCounterPanel()">🛠️ ตั้งค่า/รีเซ็ตตัวนับเลขที่เอกสาร</button>
         <div id="resetCounterPanel" style="display:none;margin-top:12px">
-          <div class="warn-box">⚠️ ใช้เฉพาะกรณีจำเป็นจริงๆ เช่น จะเริ่มเล่มใหม่เอง หรือแก้ไขค่าที่ผิดพลาด การรีเซ็ตนี้ <b>ไม่ลบ</b>เอกสารที่เคยออกไปแล้ว แต่ถ้าตั้งค่าทับช่วงเลขที่เคยออกไปแล้ว จะทำให้ออกเลขที่ซ้ำกันได้ — กรุณาตรวจสอบประวัติในแท็บ "ทะเบียนบริษัท/ประวัติ" ก่อนทุกครั้ง</div>
+          <div class="warn-box">⚠️ ใช้เฉพาะกรณีจำเป็นจริงๆ การรีเซ็ตนี้ <b>ไม่ลบ</b>เอกสารที่เคยออกไปแล้ว แต่ถ้าตั้งค่าทับช่วงเลขที่เคยออกไปแล้ว จะทำให้ออกเลขที่ซ้ำกันได้ — กรุณาตรวจสอบประวัติในแท็บ "ทะเบียนบริษัท/ประวัติ" ก่อนทุกครั้ง</div>
           <div class="form-grid cols-4">
             <div class="form-group">
               <label>ปีภาษี (พ.ศ.)</label>
@@ -342,15 +444,15 @@ table.data-table tr:hover td{background:#f8fafc}
   <!-- ============ TAB: REGISTRY / HISTORY ============ -->
   <div class="tab-panel" id="tabRegistry">
     <div class="card">
-      <h3 style="font-size:15px;margin-bottom:12px">🏢 ทะเบียนบริษัท</h3>
+      <h3 style="font-size:15px;margin-bottom:12px">🏢 ทะเบียนบริษัท/บุคคลธรรมดา</h3>
       <div class="form-group" style="margin-bottom:12px;max-width:420px">
-        <label>ค้นหาบริษัท</label>
-        <input type="text" id="registrySearch" placeholder="ชื่อบริษัท หรือ เลขผู้เสียภาษี..." oninput="loadRegistryList()">
+        <label>ค้นหา</label>
+        <input type="text" id="registrySearch" placeholder="ชื่อ หรือ เลขผู้เสียภาษี..." oninput="loadRegistryList()">
       </div>
       <div style="overflow-x:auto">
         <table class="data-table">
-          <thead><tr><th>เลขผู้เสียภาษี</th><th>ชื่อบริษัท</th><th>ที่อยู่</th><th></th></tr></thead>
-          <tbody id="registryTbody"><tr><td colspan="4" style="text-align:center;color:#94a3b8">กำลังโหลด...</td></tr></tbody>
+          <thead><tr><th>เลขผู้เสียภาษี</th><th>ประเภท</th><th>ชื่อ</th><th>ที่อยู่</th><th></th></tr></thead>
+          <tbody id="registryTbody"><tr><td colspan="5" style="text-align:center;color:#94a3b8">กำลังโหลด...</td></tr></tbody>
         </table>
       </div>
     </div>
@@ -360,7 +462,7 @@ table.data-table tr:hover td{background:#f8fafc}
       <p style="font-size:12px;color:#64748b;margin-bottom:12px">เลขผู้เสียภาษี: <span id="historyCompanyTaxId"></span></p>
       <div style="overflow-x:auto">
         <table class="data-table">
-          <thead><tr><th>วันที่ออก</th><th>ปีภาษี</th><th>งวด</th><th>ภ.ง.ด.</th><th>เล่มที่/เลขที่</th><th>รวมเงินที่จ่าย</th><th>ภาษีหัก</th><th>สถานะ</th><th></th></tr></thead>
+          <thead><tr><th>วันที่ออก</th><th>ปีภาษี</th><th>งวด</th><th>ภ.ง.ด.</th><th>เล่มที่/เลขที่</th><th>รวมเงินที่จ่าย</th><th>ภาษีหัก</th><th>สถานะ</th><th>แก้ไขล่าสุด</th><th></th></tr></thead>
           <tbody id="historyTbody"></tbody>
         </table>
       </div>
@@ -391,6 +493,21 @@ table.data-table tr:hover td{background:#f8fafc}
     <div class="card">
       <div style="overflow-x:auto">
         <table class="data-table" id="summaryTable"></table>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="font-size:15px;margin-bottom:6px">📤 ส่งออกไฟล์สำหรับนำเข้า RD Prep (รายเดือน)</h3>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px">ส่งออกเป็นไฟล์ .csv คอลัมน์เรียงตามไฟล์ตัวอย่างที่ใช้อยู่ปัจจุบัน (ลำดับที่ / เลขผู้เสียภาษี / สาขา / ชื่อ-สกุล / ที่อยู่แยกฟิลด์ / วันที่จ่าย / ประเภทเงินได้ / อัตราภาษี / จำนวนเงิน / ภาษีหัก / เงื่อนไข) ดึงเฉพาะฉบับที่ออกแบบ "รายเดือน" และยังไม่ถูกยกเลิก — เปิดไฟล์นี้แล้วนำเข้าสู่ขั้นตอนแปลงเป็น text file ที่ใช้อยู่เดิมได้เลย</p>
+      <div class="form-grid cols-3">
+        <div class="form-group">
+          <label>เดือนภาษีที่จะส่งออก</label>
+          <select id="exportMonth"></select>
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" onclick="exportRdPrepText()">📤 ดาวน์โหลดไฟล์ .csv</button>
+        </div>
       </div>
     </div>
   </div>
@@ -501,20 +618,34 @@ const PND_OPTIONS=[
   {v:'1',label:'(1) ภ.ง.ด.1ก'},{v:'2',label:'(2) ภ.ง.ด.1ก พิเศษ'},{v:'3',label:'(3) ภ.ง.ด.2'},
   {v:'4',label:'(4) ภ.ง.ด.3'},{v:'5',label:'(5) ภ.ง.ด.2ก'},{v:'6',label:'(6) ภ.ง.ด.3ก'},{v:'7',label:'(7) ภ.ง.ด.53'},
 ];
-const INCOME_ROWS_DEF=[
-  {row:'1',label:'1. เงินเดือน ค่าจ้าง เบี้ยเลี้ยง โบนัส ฯลฯ ตามมาตรา 40(1)'},
-  {row:'2',label:'2. ค่าธรรมเนียม ค่านายหน้า ฯลฯ ตามมาตรา 40(2)'},
-  {row:'3',label:'3. ค่าแห่งลิขสิทธิ์ ฯลฯ ตามมาตรา 40(3)'},
-  {row:'4a',label:'4(ก) ดอกเบี้ย ฯลฯ ตามมาตรา 40(4)(ก)'},
-  {row:'4b',label:'4(ข) เงินปันผล เงินส่วนแบ่งกำไร ฯลฯ ตามมาตรา 40(4)(ข)'},
-  {row:'5',label:'5. การจ่ายเงินได้ที่ต้องหักภาษีตามคำสั่งกรมสรรพากร (ม.3 เตรส)'},
-  {row:'6',label:'6. อื่นๆ (ระบุ)'},
+const STAT_ROWS=[
+  {row:'1',label:'1. เงินเดือน ค่าจ้าง เบี้ยเลี้ยง โบนัส ฯลฯ ตามมาตรา 40(1)',shortLabel:'1) เงินเดือน/ค่าจ้าง 40(1)'},
+  {row:'2',label:'2. ค่าธรรมเนียม ค่านายหน้า ฯลฯ ตามมาตรา 40(2)',shortLabel:'2) ค่านายหน้า 40(2)'},
+  {row:'3',label:'3. ค่าแห่งลิขสิทธิ์ ฯลฯ ตามมาตรา 40(3)',shortLabel:'3) ค่าลิขสิทธิ์ 40(3)'},
+  {row:'4a',label:'4(ก) ดอกเบี้ย ฯลฯ ตามมาตรา 40(4)(ก)',shortLabel:'4(ก) ดอกเบี้ย'},
+  {row:'4b',label:'4(ข) เงินปันผล เงินส่วนแบ่งกำไร ฯลฯ ตามมาตรา 40(4)(ข)',shortLabel:'4(ข) เงินปันผล'},
+  {row:'5',label:'5. การจ่ายเงินได้ที่ต้องหักภาษีตามคำสั่งกรมสรรพากร (ม.3 เตรส)',shortLabel:'5) ตามคำสั่งกรมสรรพากร'},
+  {row:'6',label:'6. อื่นๆ (ระบุ)',shortLabel:'6) อื่นๆ (ต้องระบุ)'},
+];
+const INCOME_TYPE_PRESETS=[
+  {label:'ค่าจ้าง',rate:3,statRow:'5'},
+  {label:'ค่าบริการ',rate:3,statRow:'5'},
+  {label:'ค่าเช่า',rate:5,statRow:'5'},
+  {label:'ค่าขนส่ง',rate:1,statRow:'5'},
+  {label:'ค่าโฆษณา',rate:2,statRow:'5'},
+  {label:'ค่าเบี้ยประกัน',rate:1,statRow:'5'},
+  {label:'ค่านายหน้า',rate:3,statRow:'2'},
+  {label:'ค่าลิขสิทธิ์',rate:3,statRow:'3'},
+  {label:'ดอกเบี้ย',rate:1,statRow:'4a'},
+  {label:'เงินปันผล',rate:10,statRow:'4b'},
+  {label:'เงินเดือน/ค่าจ้างพนักงาน',rate:0,statRow:'1'},
 ];
 
 let orgSettings={};
 let pickedCompanyId=null;
 let companySearchTimer=null;
-let registrySearchTimer=null;
+let itemRowSeq=0;
+let editingIssueId=null;
 
 // ============================================================
 // GATE (รหัสผ่านหน่วยงานย่อย — เก็บใน sessionStorage ต่อแท็บเบราว์เซอร์)
@@ -565,7 +696,7 @@ function switchTab(name){
 async function loadOrgSettings(){
   const{data,error}=await sb.from('org_settings').select('*').eq('id',1).single();
   if(error||!data){
-    showToast('ยังไม่พบตาราง org_settings หรือยังไม่มีข้อมูล — กรุณารัน cert50_company_setup.sql และตรวจสอบ org_settings ก่อน',true);
+    showToast('ยังไม่พบตาราง org_settings หรือยังไม่มีข้อมูล — กรุณารัน cert50_company_setup.sql ก่อน',true);
     return;
   }
   orgSettings=data;
@@ -665,78 +796,142 @@ async function clearImg(key){
 }
 
 // ============================================================
-// PND CHECKBOX GRID + INCOME TABLE (build once)
+// PND GRID
 // ============================================================
 function buildPndGrid(){
   const wrap=document.getElementById('pndGrid');
   wrap.innerHTML=PND_OPTIONS.map((o,i)=>`<label class="pnd-opt"><input type="radio" name="pndType" value="${o.v}" ${i===6?'checked':''}> ${esc(o.label)}</label>`).join('');
 }
-function buildIncomeTable(){
-  const t=document.getElementById('incomeTable');
-  let html='<thead><tr><th style="width:38%">ประเภทเงินได้พึงประเมิน</th><th style="width:22%">ช่วงเวลาที่จ่าย</th><th style="width:20%">จำนวนเงินที่จ่าย (บาท)</th><th style="width:20%">ภาษีที่หักนำส่ง (บาท)</th></tr></thead><tbody>';
-  INCOME_ROWS_DEF.forEach(r=>{
-    const specCell=r.row==='6'
-      ?`<br><input type="text" class="inc-spec" placeholder="ระบุประเภทเงินได้ (บังคับกรอกถ้ามีจำนวนเงินในแถวนี้) เช่น ค่าจ้างทำของครั้งเดียว" style="margin-top:5px;width:100%">`
-      :'';
-    html+=`<tr data-row="${r.row}">
-      <td>${esc(r.label)}${specCell}</td>
-      <td><input type="text" class="inc-period" placeholder="เช่น ม.ค.-ธ.ค. 2569"></td>
-      <td class="amt-cell"><input type="number" step="0.01" class="inc-amount" oninput="recalcIncomeTotals()" placeholder="0.00"></td>
-      <td class="amt-cell"><input type="number" step="0.01" class="inc-tax" oninput="recalcIncomeTotals()" placeholder="0.00"></td>
-    </tr>`;
-  });
-  html+='</tbody>';
-  t.innerHTML=html;
+function buildMonthSelect(){
+  const sel=document.getElementById('periodMonth');
+  sel.innerHTML=MONTHS_TH.slice(1).map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
+  const exportSel=document.getElementById('exportMonth');
+  exportSel.innerHTML=MONTHS_TH.slice(1).map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
 }
-function recalcIncomeTotals(){
-  let sumI=0,sumT=0;
-  document.querySelectorAll('#incomeTable tbody tr').forEach(tr=>{
-    sumI+=Number(tr.querySelector('.inc-amount').value||0);
-    sumT+=Number(tr.querySelector('.inc-tax').value||0);
-  });
-  document.getElementById('sumIncome').textContent=money(sumI);
-  document.getElementById('sumTax').textContent=money(sumT);
-  return{sumI,sumT};
-}
-function getIncomeRowsData(){
-  const rows=[];
-  document.querySelectorAll('#incomeTable tbody tr').forEach(tr=>{
-    const row=tr.dataset.row;
-    const def=INCOME_ROWS_DEF.find(r=>r.row===row);
-    const period=tr.querySelector('.inc-period').value.trim();
-    const amount=Number(tr.querySelector('.inc-amount').value||0);
-    const tax=Number(tr.querySelector('.inc-tax').value||0);
-    const specEl=tr.querySelector('.inc-spec');
-    const spec=specEl?specEl.value.trim():'';
-    if(period||amount||tax||spec)rows.push({row,label:def.label,period,amount,tax,spec});
-  });
-  return rows;
-}
-// แถวข้อ 6 "อื่นๆ (ระบุ)" ถ้ามีจำนวนเงินหรือภาษี ต้องกรอกช่องระบุประเภทเงินได้ด้วยเสมอ
-function validateIncomeRows(rows){
-  const row6=rows.find(r=>r.row==='6');
-  if(row6&&(row6.amount||row6.tax)&&!row6.spec){
-    showToast('กรุณาระบุประเภทเงินได้ในข้อ 6 (อื่นๆ) ก่อนดำเนินการต่อ',true);
-    const tr=document.querySelector('#incomeTable tbody tr[data-row="6"]');
-    if(tr)tr.querySelector('.inc-spec').focus();
-    return false;
-  }
-  return true;
+function onPeriodTypeChange(){
+  document.getElementById('periodMonthWrap').style.display=document.getElementById('periodType').value==='monthly'?'flex':'none';
 }
 
 // ============================================================
-// COMPANY SEARCH / REGISTRY
+// PAYEE (บริษัท/บุคคลธรรมดา) — ฟอร์ม + ทะเบียน
 // ============================================================
+function togglePayeeType(){
+  const isIndividual=document.getElementById('payeeType_individual').checked;
+  document.getElementById('individualFieldsWrap').style.display=isIndividual?'grid':'none';
+  document.getElementById('juristicFieldsWrap').style.display=isIndividual?'none':'grid';
+  document.getElementById('branchWrap').style.display=isIndividual?'none':'flex';
+}
+function composeDisplayName(p){
+  if(p.payeeType==='individual'){
+    return `${p.prefix||''}${p.firstName||''}${p.middleName?(' '+p.middleName):''} ${p.lastName||''}`.replace(/\s+/g,' ').trim();
+  }
+  return (p.companyName||'').trim();
+}
+function composeAddressLine(p){
+  const parts=[];
+  if(p.houseNo)parts.push('เลขที่ '+p.houseNo);
+  if(p.moo)parts.push('หมู่ '+p.moo);
+  if(p.soi)parts.push('ซ.'+p.soi);
+  if(p.junction)parts.push('แยก'+p.junction);
+  if(p.road)parts.push('ถ.'+p.road);
+  if(p.subdistrict)parts.push('ต.'+p.subdistrict);
+  if(p.district)parts.push('อ.'+p.district);
+  if(p.province)parts.push('จ.'+p.province);
+  if(p.postalCode)parts.push(p.postalCode);
+  return parts.join(' ');
+}
+function collectPayeeFields(){
+  const payeeType=document.getElementById('payeeType_individual').checked?'individual':'juristic';
+  return{
+    payeeType,
+    taxId:document.getElementById('companyTaxId').value.replace(/\D/g,''),
+    prefix:document.getElementById('prefixInput').value.trim(),
+    firstName:document.getElementById('firstNameInput').value.trim(),
+    middleName:document.getElementById('middleNameInput').value.trim(),
+    lastName:document.getElementById('lastNameInput').value.trim(),
+    companyName:document.getElementById('juristicNameInput').value.trim(),
+    branch:document.getElementById('branchInput').value.trim(),
+    houseNo:document.getElementById('houseNoInput').value.trim(),
+    moo:document.getElementById('mooInput').value.trim(),
+    soi:document.getElementById('soiInput').value.trim(),
+    junction:document.getElementById('junctionInput').value.trim(),
+    road:document.getElementById('roadInput').value.trim(),
+    subdistrict:document.getElementById('subdistrictInput').value.trim(),
+    district:document.getElementById('districtInput').value.trim(),
+    province:document.getElementById('provinceInput').value.trim(),
+    postalCode:document.getElementById('postalCodeInput').value.trim(),
+  };
+}
+function applyPayeeFields(c){
+  document.getElementById('payeeType_individual').checked=c.payee_type==='individual';
+  document.getElementById('payeeType_juristic').checked=c.payee_type!=='individual';
+  togglePayeeType();
+  document.getElementById('companyTaxId').value=c.tax_id||'';
+  document.getElementById('prefixInput').value=c.prefix||'';
+  document.getElementById('firstNameInput').value=c.first_name||'';
+  document.getElementById('middleNameInput').value=c.middle_name||'';
+  document.getElementById('lastNameInput').value=c.last_name||'';
+  document.getElementById('juristicNameInput').value=c.payee_type==='individual'?'':(c.company_name||'');
+  document.getElementById('branchInput').value=c.branch||'';
+  document.getElementById('houseNoInput').value=c.house_no||'';
+  document.getElementById('mooInput').value=c.moo||'';
+  document.getElementById('soiInput').value=c.soi||'';
+  document.getElementById('junctionInput').value=c.junction||'';
+  document.getElementById('roadInput').value=c.road||'';
+  document.getElementById('subdistrictInput').value=c.subdistrict||'';
+  document.getElementById('districtInput').value=c.district||'';
+  document.getElementById('provinceInput').value=c.province||'';
+  document.getElementById('postalCodeInput').value=c.postal_code||'';
+}
+function clearCompanyForm(){
+  pickedCompanyId=null;
+  document.getElementById('companySearch').value='';
+  document.getElementById('payeeType_juristic').checked=true;
+  togglePayeeType();
+  ['companyTaxId','prefixInput','firstNameInput','middleNameInput','lastNameInput','juristicNameInput','branchInput',
+   'houseNoInput','mooInput','soiInput','junctionInput','roadInput','subdistrictInput','districtInput','provinceInput','postalCodeInput']
+   .forEach(id=>document.getElementById(id).value='');
+  document.getElementById('companyPickedNote').style.display='none';
+}
+function pickCompany(c){
+  pickedCompanyId=c.id;
+  document.getElementById('companySearch').value=c.company_name;
+  applyPayeeFields(c);
+  document.getElementById('companyPickedNote').style.display='inline';
+}
+async function saveCompany(){
+  const p=collectPayeeFields();
+  const displayName=composeDisplayName(p);
+  if(!p.taxId||p.taxId.length!==13){showToast('กรุณากรอกเลขผู้เสียภาษี 13 หลักให้ครบ',true);return;}
+  if(!displayName){showToast('กรุณากรอกชื่อ/ชื่อนิติบุคคล',true);return;}
+  const payload=buildCompanyPayload(p,displayName);
+  if(pickedCompanyId)payload.id=pickedCompanyId;
+  const{data,error}=await sb.from('cert50_companies').upsert(payload,{onConflict:'tax_id'}).select().single();
+  if(error){showToast('บันทึกไม่สำเร็จ: '+error.message,true);return;}
+  pickedCompanyId=data.id;
+  showToast('บันทึกลงทะเบียนสำเร็จ');
+}
+function buildCompanyPayload(p,displayName){
+  return{
+    tax_id:p.taxId, payee_type:p.payeeType,
+    company_name:displayName, address:composeAddressLine(p),
+    prefix:p.prefix, first_name:p.firstName, middle_name:p.middleName, last_name:p.lastName,
+    branch:p.branch, house_no:p.houseNo, moo:p.moo, soi:p.soi, junction:p.junction,
+    road:p.road, subdistrict:p.subdistrict, district:p.district, province:p.province,
+    postal_code:p.postalCode, updated_at:new Date().toISOString(),
+  };
+}
+
 function onCompanySearchInput(){
   clearTimeout(companySearchTimer);
   const q=document.getElementById('companySearch').value.trim();
   companySearchTimer=setTimeout(async()=>{
     const box=document.getElementById('companySearchResults');
     if(!q){box.style.display='none';return;}
-    const{data,error}=await sb.from('cert50_companies').select('id,tax_id,company_name,address')
+    const{data,error}=await sb.from('cert50_companies').select('*')
       .or(`company_name.ilike.%${q}%,tax_id.ilike.%${q}%`).limit(20);
     if(error){box.innerHTML=`<div class="opt-empty">ค้นหาไม่สำเร็จ: ${esc(error.message)}</div>`;box.style.display='block';return;}
-    if(!data||!data.length){box.innerHTML=`<div class="opt-empty">ไม่พบบริษัทในทะเบียน — กรอกข้อมูลด้านล่างเพื่อเพิ่มใหม่ได้เลย</div>`;box.style.display='block';return;}
+    if(!data||!data.length){box.innerHTML=`<div class="opt-empty">ไม่พบในทะเบียน — กรอกข้อมูลด้านล่างเพื่อเพิ่มใหม่ได้เลย</div>`;box.style.display='block';return;}
     box.innerHTML=data.map(c=>`<div class="opt" data-id="${c.id}">${esc(c.tax_id)} — ${esc(c.company_name)}</div>`).join('');
     box.style.display='block';
     [...box.querySelectorAll('.opt')].forEach((el,i)=>{
@@ -744,46 +939,17 @@ function onCompanySearchInput(){
     });
   },250);
 }
-function pickCompany(c){
-  pickedCompanyId=c.id;
-  document.getElementById('companySearch').value=c.company_name;
-  document.getElementById('companyTaxId').value=c.tax_id;
-  document.getElementById('companyName').value=c.company_name;
-  document.getElementById('companyAddress').value=c.address||'';
-  document.getElementById('companyPickedNote').style.display='inline';
-}
-function clearCompanyForm(){
-  pickedCompanyId=null;
-  document.getElementById('companySearch').value='';
-  document.getElementById('companyTaxId').value='';
-  document.getElementById('companyName').value='';
-  document.getElementById('companyAddress').value='';
-  document.getElementById('companyPickedNote').style.display='none';
-}
-async function saveCompany(){
-  const tax_id=document.getElementById('companyTaxId').value.replace(/\D/g,'');
-  const company_name=document.getElementById('companyName').value.trim();
-  const address=document.getElementById('companyAddress').value.trim();
-  if(!tax_id||tax_id.length!==13){showToast('กรุณากรอกเลขผู้เสียภาษี 13 หลักให้ครบ',true);return;}
-  if(!company_name){showToast('กรุณากรอกชื่อบริษัท',true);return;}
-  const payload={tax_id,company_name,address,updated_at:new Date().toISOString()};
-  if(pickedCompanyId)payload.id=pickedCompanyId;
-  const{data,error}=await sb.from('cert50_companies').upsert(payload,{onConflict:'tax_id'}).select().single();
-  if(error){showToast('บันทึกไม่สำเร็จ: '+error.message,true);return;}
-  pickedCompanyId=data.id;
-  showToast('บันทึกทะเบียนบริษัทสำเร็จ');
-}
 
 async function loadRegistryList(){
   const q=(document.getElementById('registrySearch').value||'').trim();
-  let query=sb.from('cert50_companies').select('id,tax_id,company_name,address').order('company_name').limit(200);
+  let query=sb.from('cert50_companies').select('*').order('company_name').limit(200);
   if(q)query=query.or(`company_name.ilike.%${q}%,tax_id.ilike.%${q}%`);
   const{data,error}=await query;
   const tbody=document.getElementById('registryTbody');
-  if(error){tbody.innerHTML=`<tr><td colspan="4" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
-  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="4" style="text-align:center;color:#94a3b8">ยังไม่มีบริษัทในทะเบียน</td></tr>`;return;}
+  if(error){tbody.innerHTML=`<tr><td colspan="5" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
+  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#94a3b8">ยังไม่มีรายชื่อในทะเบียน</td></tr>`;return;}
   tbody.innerHTML=data.map(c=>`<tr>
-    <td>${esc(c.tax_id)}</td><td>${esc(c.company_name)}</td><td>${esc(c.address||'-')}</td>
+    <td>${esc(c.tax_id)}</td><td>${c.payee_type==='individual'?'บุคคลธรรมดา':'นิติบุคคล'}</td><td>${esc(c.company_name)}</td><td>${esc(c.address||'-')}</td>
     <td style="white-space:nowrap">
       <button class="btn btn-outline" style="font-size:11px;padding:4px 8px" onclick="useCompanyInIssueTab('${c.id}')">ใช้ในแท็บออกหนังสือ</button>
       <button class="btn btn-outline" style="font-size:11px;padding:4px 8px" onclick="showCompanyHistory('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}','${esc(c.tax_id)}')">ดูประวัติ</button>
@@ -792,54 +958,132 @@ async function loadRegistryList(){
 }
 function useCompanyInIssueTab(id){
   sb.from('cert50_companies').select('*').eq('id',id).single().then(({data,error})=>{
-    if(error||!data){showToast('ไม่พบข้อมูลบริษัท',true);return;}
+    if(error||!data){showToast('ไม่พบข้อมูล',true);return;}
     pickCompany(data);
     switchTab('issue');
-    showToast('เลือกบริษัทนี้ในแท็บออกหนังสือแล้ว');
+    showToast('เลือกรายนี้ในแท็บออกหนังสือแล้ว');
   });
 }
-async function showCompanyHistory(companyId,name,taxId){
-  document.getElementById('companyHistoryCard').style.display='block';
-  document.getElementById('historyCompanyName').textContent=name;
-  document.getElementById('historyCompanyTaxId').textContent=taxId;
-  const{data,error}=await sb.from('cert50_company_issues').select('*').eq('company_id',companyId).order('created_at',{ascending:false});
-  const tbody=document.getElementById('historyTbody');
-  if(error){tbody.innerHTML=`<tr><td colspan="9" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
-  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="9" style="text-align:center;color:#94a3b8">ยังไม่เคยออกหนังสือให้บริษัทนี้</td></tr>`;return;}
-  tbody.innerHTML=data.map(r=>`<tr>
-    <td>${r.cert_day||''}/${r.cert_month||''}/${r.cert_year_be||''}</td>
-    <td>${r.year_be}</td>
-    <td>${r.period_type==='monthly'?('เดือน '+MONTHS_TH[r.period_month]) :'รายปี'}</td>
-    <td>${esc((PND_OPTIONS.find(p=>p.v===r.pnd_type)||{}).label||r.pnd_type)}</td>
-    <td>${r.book_no}/${r.cert_no}</td>
-    <td style="text-align:right">${money(r.total_income)}</td>
-    <td style="text-align:right">${money(r.total_tax)}</td>
-    <td><span class="badge ${r.status==='voided'?'badge-voided':'badge-issued'}">${r.status==='voided'?'ยกเลิกแล้ว':'ออกแล้ว'}</span></td>
-    <td>${r.status!=='voided'?`<button class="btn btn-outline" style="font-size:11px;padding:4px 8px" onclick="voidIssue('${r.id}','${companyId}','${esc(name).replace(/'/g,"\\'")}','${esc(taxId)}')">ยกเลิกฉบับนี้</button>`:''}</td>
-  </tr>`).join('');
+
+// ============================================================
+// รายการเงินได้ (itemized)
+// ============================================================
+function addIncomeItemRow(prefill){
+  prefill=prefill||{};
+  itemRowSeq++;
+  const id='item_'+itemRowSeq;
+  const today=prefill.date||new Date().toISOString().slice(0,10);
+  const tbody=document.getElementById('incomeItemsBody');
+  const tr=document.createElement('tr');
+  tr.dataset.id=id;
+  const typeOptions=INCOME_TYPE_PRESETS.map(p=>`<option value="${esc(p.label)}" ${prefill.incomeType===p.label?'selected':''}>${esc(p.label)}</option>`).join('')
+    +`<option value="__custom__" ${prefill.incomeType&&!INCOME_TYPE_PRESETS.find(p=>p.label===prefill.incomeType)?'selected':''}>อื่นๆ (พิมพ์เอง)</option>`;
+  const statOptions=STAT_ROWS.map(r=>`<option value="${r.row}" ${prefill.statRow===r.row?'selected':''}>${esc(r.shortLabel)}</option>`).join('');
+  const isCustomType=prefill.incomeType&&!INCOME_TYPE_PRESETS.find(p=>p.label===prefill.incomeType);
+  tr.innerHTML=`
+    <td><input type="date" class="item-date" value="${today}"></td>
+    <td>
+      <select class="item-type-select" onchange="onItemTypeChange(this)">${typeOptions}</select>
+      <input type="text" class="item-type-custom" placeholder="ระบุประเภทเงินได้" value="${isCustomType?esc(prefill.incomeType):''}" style="display:${isCustomType?'block':'none'};margin-top:4px">
+    </td>
+    <td>
+      <select class="item-statrow" onchange="onItemStatRowChange(this)">${statOptions}</select>
+      <input type="text" class="item-row6-spec" placeholder="ระบุ (ข้อ 6)" value="${esc(prefill.row6Spec||'')}" style="display:${prefill.statRow==='6'?'block':'none'};margin-top:4px">
+    </td>
+    <td><input type="number" step="0.01" class="item-rate" value="${prefill.rate!=null?prefill.rate:0}" oninput="recalcItemsTotals()"></td>
+    <td><input type="number" step="0.01" class="item-amount" value="${prefill.amount!=null?prefill.amount:''}" oninput="onItemAmountInput(this)"></td>
+    <td><input type="number" step="0.01" class="item-tax" value="${prefill.tax!=null?prefill.tax:''}" oninput="recalcItemsTotals()"></td>
+    <td><button class="btn btn-outline" style="padding:4px 8px;font-size:11px" onclick="this.closest('tr').remove();recalcItemsTotals()">ลบ</button></td>
+  `;
+  tbody.appendChild(tr);
+  recalcItemsTotals();
 }
-async function voidIssue(id,companyId,name,taxId){
-  if(!confirm('ยืนยันยกเลิกหนังสือฉบับนี้? เลขที่เอกสารจะถูกบันทึกไว้เป็นประวัติว่ายกเลิกแล้ว (ไม่สามารถนำเลขไปใช้ซ้ำได้)'))return;
-  const{error}=await sb.from('cert50_company_issues').update({status:'voided'}).eq('id',id);
-  if(error){showToast('ยกเลิกไม่สำเร็จ: '+error.message,true);return;}
-  showToast('ยกเลิกฉบับนี้แล้ว');
-  showCompanyHistory(companyId,name,taxId);
+function onItemTypeChange(sel){
+  const tr=sel.closest('tr');
+  const customInput=tr.querySelector('.item-type-custom');
+  if(sel.value==='__custom__'){customInput.style.display='block';customInput.focus();return;}
+  customInput.style.display='none';
+  const preset=INCOME_TYPE_PRESETS.find(p=>p.label===sel.value);
+  if(preset){
+    tr.querySelector('.item-rate').value=preset.rate;
+    const statSel=tr.querySelector('.item-statrow');
+    statSel.value=preset.statRow;
+    onItemStatRowChange(statSel);
+    onItemAmountInput(tr.querySelector('.item-amount'));
+  }
+}
+function onItemStatRowChange(sel){
+  const tr=sel.closest('tr');
+  tr.querySelector('.item-row6-spec').style.display=sel.value==='6'?'block':'none';
+}
+function onItemAmountInput(input){
+  const tr=input.closest('tr');
+  const rate=Number(tr.querySelector('.item-rate').value||0);
+  const amount=Number(input.value||0);
+  tr.querySelector('.item-tax').value=(Math.round(amount*rate)/100).toFixed(2);
+  recalcItemsTotals();
+}
+function recalcItemsTotals(){
+  let sumI=0,sumT=0;
+  document.querySelectorAll('#incomeItemsBody tr').forEach(tr=>{
+    sumI+=Number(tr.querySelector('.item-amount').value||0);
+    sumT+=Number(tr.querySelector('.item-tax').value||0);
+  });
+  document.getElementById('sumIncome').textContent=money(sumI);
+  document.getElementById('sumTax').textContent=money(sumT);
+  return{sumI,sumT};
+}
+function getIncomeItemsData(){
+  const items=[];
+  document.querySelectorAll('#incomeItemsBody tr').forEach(tr=>{
+    const date=tr.querySelector('.item-date').value;
+    const typeSel=tr.querySelector('.item-type-select');
+    const incomeType=typeSel.value==='__custom__'?tr.querySelector('.item-type-custom').value.trim():typeSel.value;
+    const statRow=tr.querySelector('.item-statrow').value;
+    const row6Spec=tr.querySelector('.item-row6-spec').value.trim();
+    const rate=Number(tr.querySelector('.item-rate').value||0);
+    const amount=Number(tr.querySelector('.item-amount').value||0);
+    const tax=Number(tr.querySelector('.item-tax').value||0);
+    if(date||amount||tax)items.push({date,incomeType,statRow,row6Spec,rate,amount,tax});
+  });
+  return items;
+}
+function validateIncomeItems(items){
+  if(!items.length){showToast('กรุณาเพิ่มรายการเงินได้อย่างน้อย 1 รายการ',true);return false;}
+  const bad=items.find(it=>it.statRow==='6'&&!it.row6Spec);
+  if(bad){showToast('กรุณาระบุประเภทเงินได้ในรายการที่เลือกหมวด "6. อื่นๆ" ก่อนดำเนินการต่อ',true);return false;}
+  return true;
+}
+function computeTotals(items){
+  let sumI=0,sumT=0;
+  items.forEach(it=>{sumI+=it.amount;sumT+=it.tax;});
+  return{sumI,sumT};
+}
+function aggregateByStatRow(items){
+  const agg={};
+  STAT_ROWS.forEach(r=>agg[r.row]={amount:0,tax:0,dates:[],specs:new Set()});
+  items.forEach(it=>{
+    const a=agg[it.statRow];if(!a)return;
+    a.amount+=it.amount;a.tax+=it.tax;
+    if(it.date)a.dates.push(it.date);
+    if(it.statRow==='6'&&it.row6Spec)a.specs.add(it.row6Spec);
+  });
+  Object.values(agg).forEach(a=>a.dates.sort());
+  return agg;
+}
+function formatDateBE(dateStr){
+  if(!dateStr)return'';
+  const[y,m,d]=dateStr.split('-').map(Number);
+  return `${d} ${MONTHS_TH[m]||''} ${y+543}`;
+}
+function periodTextForRow(a){
+  if(!a.dates.length)return'';
+  const min=a.dates[0],max=a.dates[a.dates.length-1];
+  return min===max?formatDateBE(min):`${formatDateBE(min)} - ${formatDateBE(max)}`;
 }
 
 // ============================================================
-// PERIOD TYPE
-// ============================================================
-function onPeriodTypeChange(){
-  const isMonthly=document.getElementById('periodType').value==='monthly';
-  document.getElementById('periodMonthWrap').style.display=isMonthly?'flex':'none';
-}
-function buildMonthSelect(){
-  const sel=document.getElementById('periodMonth');
-  sel.innerHTML=MONTHS_TH.slice(1).map((m,i)=>`<option value="${i+1}">${m}</option>`).join('');
-}
-
-// ============================================================
-// เลขไทยเป็นตัวหนังสือ + กล่องเลขผู้เสียภาษี (เหมือนต้นฉบับ)
+// เลขไทยเป็นตัวหนังสือ + กล่องเลขผู้เสียภาษี
 // ============================================================
 function thaiBahtText(number){
   const numText=['ศูนย์','หนึ่ง','สอง','สาม','สี่','ห้า','หก','เจ็ด','แปด','เก้า'];
@@ -879,19 +1123,21 @@ function renderTaxIdBoxes(t){
 }
 
 // ============================================================
-// BUILD CERT HTML
+// FORM STATE
 // ============================================================
 function collectFormState(){
   const pnd=document.querySelector('input[name="pndType"]:checked');
+  const p=collectPayeeFields();
   return{
-    companyTaxId:document.getElementById('companyTaxId').value,
-    companyName:document.getElementById('companyName').value,
-    companyAddress:document.getElementById('companyAddress').value,
+    ...p,
+    displayName:composeDisplayName(p),
+    addressDisplay:composeAddressLine(p),
     yearBE:parseInt(document.getElementById('certYearBE').value)||0,
     periodType:document.getElementById('periodType').value,
     periodMonth:parseInt(document.getElementById('periodMonth').value)||null,
     pndType:pnd?pnd.value:'7',
     copyNo:document.getElementById('certCopyNo').value,
+    includeDuplicate:document.getElementById('includeDuplicate').checked,
     certDay:document.getElementById('cert_d').value||'',
     certMonth:parseInt(document.getElementById('cert_m').value)||0,
     certYearVal:document.getElementById('cert_y').value||'',
@@ -902,10 +1148,26 @@ function collectFormState(){
     certNo:document.getElementById('certNo').value,
   };
 }
+function buildPayeeSnapshot(state){
+  return{
+    payeeType:state.payeeType,taxId:state.taxId,prefix:state.prefix,firstName:state.firstName,
+    middleName:state.middleName,lastName:state.lastName,companyName:state.companyName,branch:state.branch,
+    houseNo:state.houseNo,moo:state.moo,soi:state.soi,junction:state.junction,road:state.road,
+    subdistrict:state.subdistrict,district:state.district,province:state.province,postalCode:state.postalCode,
+  };
+}
+function validateFormBeforeCert(state){
+  if(!state.taxId||state.taxId.length!==13){showToast('กรุณากรอกเลขผู้เสียภาษี 13 หลักให้ครบ',true);return false;}
+  if(!state.displayName){showToast('กรุณากรอกชื่อ/ชื่อนิติบุคคล',true);return false;}
+  if(!state.yearBE){showToast('กรุณาระบุปีภาษี',true);return false;}
+  if(state.periodType==='monthly'&&!state.periodMonth){showToast('กรุณาเลือกเดือนภาษี',true);return false;}
+  return true;
+}
 
-// สร้างเอกสาร 1 หน้า — effectiveCopyNo คือฉบับที่ 1 หรือ 2 ที่จะติ๊กในหน้านั้นจริง
-// (ต่างจาก state.copyNo ที่ผู้ใช้เลือกในฟอร์ม ซึ่งอาจเป็น '3' = ทั้ง 2 ฉบับ)
-function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
+// ============================================================
+// BUILD CERT HTML (1 หน้า) + BUILD PAGES (รองรับ 2 ฉบับ x สำเนา = สูงสุด 4 หน้า)
+// ============================================================
+function buildCertHtml(state,agg,totals,effectiveCopyNo,isDuplicate){
   const copyNo=effectiveCopyNo||(state.copyNo==='3'?'1':state.copyNo);
   const orgTaxId=orgSettings.org_tax_id||'';
   const orgAddr=orgSettings.org_address||'';
@@ -916,13 +1178,12 @@ function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
   const stampUrl=orgSettings[`stamp${signerN}_url`]||'';
   const certMonthTh=MONTHS_TH[state.certMonth]||'';
 
-  const rowsByKey={};
-  incomeRows.forEach(r=>rowsByKey[r.row]=r);
   function rowCells(rowKey,defLabel){
-    const r=rowsByKey[rowKey];
-    if(!r)return `<tr><td>${esc(defLabel)}</td><td></td><td class="amt"></td><td class="amt"></td></tr>`;
-    const labelOut=(rowKey==='6'&&r.spec)?`${defLabel} — ${r.spec}`:defLabel;
-    return `<tr><td>${esc(labelOut)}</td><td style="text-align:center">${esc(r.period||'')}</td><td class="amt">${money(r.amount)}</td><td class="amt">${money(r.tax)}</td></tr>`;
+    const a=agg[rowKey];
+    if(!a||(!a.amount&&!a.tax&&!a.dates.length))return `<tr><td>${esc(defLabel)}</td><td></td><td class="amt"></td><td class="amt"></td></tr>`;
+    const specs=[...a.specs];
+    const labelOut=(rowKey==='6'&&specs.length)?`${defLabel} — ${specs.join('/')}`:defLabel;
+    return `<tr><td>${esc(labelOut)}</td><td style="text-align:center">${esc(periodTextForRow(a))}</td><td class="amt">${money(a.amount)}</td><td class="amt">${money(a.tax)}</td></tr>`;
   }
 
   const pndLabelsRow=PND_OPTIONS.map(o=>`<label>${state.pndType===o.v?'☑':'☐'} ${esc(o.label)}</label>`).join(' ');
@@ -930,6 +1191,7 @@ function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
   const periodLine=state.periodType==='monthly'?`ประจำเดือน ${certMonthTh||''} พ.ศ. ${state.yearBE}`:`ประจำปีภาษี พ.ศ. ${state.yearBE}`;
 
   return `
+    ${isDuplicate?'<div class="cert-copy-badge">สำเนา</div>':''}
     <div class="cert-toprow">
       <div class="cert-copy-labels">
         <div>${copyNo==='1'?'☑':'☐'} ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย ใช้แนบพร้อมกับแบบแสดงรายการภาษี)</div>
@@ -953,9 +1215,9 @@ function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
 
       <div class="cert-section">
         <div class="cert-section-title">ผู้ถูกหักภาษี ณ ที่จ่าย : -</div>
-        <div class="cert-taxid-row">เลขประจำตัวผู้เสียภาษีอากร (13 หลัก)* <div class="taxid-boxes">${renderTaxIdBoxes(state.companyTaxId)}</div></div>
-        <div class="cert-row"><span class="lbl">ชื่อ</span><span class="val">${esc(state.companyName)}</span></div>
-        <div class="cert-row"><span class="lbl">ที่อยู่</span><span class="val">${esc(state.companyAddress)}</span></div>
+        <div class="cert-taxid-row">เลขประจำตัวผู้เสียภาษีอากร (13 หลัก)* <div class="taxid-boxes">${renderTaxIdBoxes(state.taxId)}</div></div>
+        <div class="cert-row"><span class="lbl">ชื่อ</span><span class="val">${esc(state.displayName)}</span></div>
+        <div class="cert-row"><span class="lbl">ที่อยู่</span><span class="val">${esc(state.addressDisplay)}</span></div>
       </div>
 
       <div class="cert-pndrow">
@@ -971,13 +1233,13 @@ function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
           <th style="width:19%">ภาษีที่หักและนำส่งไว้</th>
         </tr></thead>
         <tbody>
-          ${rowCells('1',INCOME_ROWS_DEF[0].label)}
-          ${rowCells('2',INCOME_ROWS_DEF[1].label)}
-          ${rowCells('3',INCOME_ROWS_DEF[2].label)}
-          ${rowCells('4a',INCOME_ROWS_DEF[3].label)}
-          ${rowCells('4b',INCOME_ROWS_DEF[4].label)}
-          ${rowCells('5',INCOME_ROWS_DEF[5].label)}
-          ${rowCells('6',INCOME_ROWS_DEF[6].label)}
+          ${rowCells('1',STAT_ROWS[0].label)}
+          ${rowCells('2',STAT_ROWS[1].label)}
+          ${rowCells('3',STAT_ROWS[2].label)}
+          ${rowCells('4a',STAT_ROWS[3].label)}
+          ${rowCells('4b',STAT_ROWS[4].label)}
+          ${rowCells('5',STAT_ROWS[5].label)}
+          ${rowCells('6',STAT_ROWS[6].label)}
           <tr class="cert-total-row"><td colspan="2" style="text-align:right">รวมเงินที่จ่ายและภาษีที่หักนำส่ง</td><td class="amt">${money(totals.sumI)}</td><td class="amt">${money(totals.sumT)}</td></tr>
         </tbody>
       </table></div>
@@ -1010,14 +1272,14 @@ function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
       3. กรณีอื่นๆ นอกเหนือจาก 1. และ 2. ให้ใช้เลขประจำตัวผู้เสียภาษีอากร (13 หลัก) ของกรมสรรพากร
     </div>`;
 }
-
-// state.copyNo==='3' (ทั้ง 2 ฉบับ) → คืนเอกสาร 2 หน้า (ฉบับที่ 1 และ 2) ใช้เลขที่เอกสารเดียวกัน
-// กรณีอื่นคืนเอกสาร 1 หน้าตามฉบับที่เลือก
-function buildCertPages(state,incomeRows,totals){
-  if(state.copyNo==='3'){
-    return[buildCertHtml(state,incomeRows,totals,'1'),buildCertHtml(state,incomeRows,totals,'2')];
-  }
-  return[buildCertHtml(state,incomeRows,totals)];
+function buildCertPages(state,agg,totals){
+  const baseCopies=state.copyNo==='3'?['1','2']:[state.copyNo];
+  const pages=[];
+  baseCopies.forEach(c=>{
+    pages.push(buildCertHtml(state,agg,totals,c,false));
+    if(state.includeDuplicate)pages.push(buildCertHtml(state,agg,totals,c,true));
+  });
+  return pages;
 }
 function renderCertPages(pages){
   const wrap=document.getElementById('certPagesWrap');
@@ -1026,22 +1288,14 @@ function renderCertPages(pages){
   document.getElementById('certEmptyState').style.display='none';
 }
 
-function validateFormBeforeCert(state){
-  if(!state.companyTaxId||state.companyTaxId.replace(/\D/g,'').length!==13){showToast('กรุณากรอกเลขผู้เสียภาษีบริษัท 13 หลักให้ครบ',true);return false;}
-  if(!state.companyName){showToast('กรุณากรอกชื่อบริษัท',true);return false;}
-  if(!state.yearBE){showToast('กรุณาระบุปีภาษี',true);return false;}
-  if(state.periodType==='monthly'&&!state.periodMonth){showToast('กรุณาเลือกเดือนภาษี',true);return false;}
-  return true;
-}
-
 function previewCert(){
   const state=collectFormState();
   if(!validateFormBeforeCert(state))return;
-  const incomeRows=getIncomeRowsData();
-  if(!validateIncomeRows(incomeRows))return;
-  const totals=recalcIncomeTotals();
-  const pages=buildCertPages(state,incomeRows,totals);
-  renderCertPages(pages);
+  const items=getIncomeItemsData();
+  if(!validateIncomeItems(items))return;
+  const agg=aggregateByStatRow(items);
+  const totals=computeTotals(items);
+  renderCertPages(buildCertPages(state,agg,totals));
 }
 
 // ============================================================
@@ -1062,7 +1316,7 @@ async function requestCertNumber(){
 }
 
 // ============================================================
-// ตั้งค่า/รีเซ็ตตัวนับเลขที่เอกสาร (แก้ไขตรงตาราง cert50_number_counter)
+// ตั้งค่า/รีเซ็ตตัวนับเลขที่เอกสาร
 // ============================================================
 function toggleResetCounterPanel(){
   const p=document.getElementById('resetCounterPanel');
@@ -1079,11 +1333,8 @@ async function loadCurrentCounter(){
   if(!yearBE){info.textContent='';return;}
   const{data,error}=await sb.from('cert50_number_counter').select('*').eq('year_be',yearBE).maybeSingle();
   if(error){info.textContent='โหลดค่าปัจจุบันไม่สำเร็จ: '+error.message;return;}
-  if(!data){
-    info.textContent=`ปีภาษี ${yearBE} ยังไม่เคยขอเลขที่เอกสารเลย (ยังไม่มีตัวนับ) — ถ้ากดบันทึกด้านล่าง จะเป็นการสร้างตัวนับใหม่เริ่มตามค่าที่กรอก`;
-    return;
-  }
-  info.innerHTML=`ค่าปัจจุบันของปี ${yearBE}: เล่มที่ <b>${data.book_no}</b> · เลขที่ล่าสุดที่ออกไปแล้ว <b>${data.last_no}</b> (ฉบับถัดไปจะได้เลขที่ ${data.last_no+1}) · จำนวนต่อเล่ม <b>${data.per_book}</b>`;
+  if(!data){info.textContent=`ปีภาษี ${yearBE} ยังไม่เคยขอเลขที่เอกสารเลย`;return;}
+  info.innerHTML=`ค่าปัจจุบันของปี ${yearBE}: เล่มที่ <b>${data.book_no}</b> · เลขที่ล่าสุด <b>${data.last_no}</b> (ฉบับถัดไปจะได้เลขที่ ${data.last_no+1}) · จำนวนต่อเล่ม <b>${data.per_book}</b>`;
 }
 async function resetCounter(){
   const yearBE=parseInt(document.getElementById('resetYearBE').value);
@@ -1091,68 +1342,140 @@ async function resetCounter(){
   const lastNo=parseInt(document.getElementById('resetLastNo').value)||0;
   const perBook=parseInt(document.getElementById('resetPerBook').value)||100;
   if(!yearBE){showToast('กรุณาระบุปีภาษีที่จะรีเซ็ต',true);return;}
-  if(!confirm(`ยืนยันตั้งค่าตัวนับของปีภาษี ${yearBE} เป็น เล่มที่ ${bookNo} / เลขที่ล่าสุด ${lastNo} (ฉบับถัดไปจะได้เลขที่ ${lastNo+1})?\n\nกรุณาตรวจสอบประวัติการออกหนังสือของปีนี้ก่อน เพื่อป้องกันไม่ให้ออกเลขที่ซ้ำกับฉบับที่เคยออกไปแล้ว`))return;
+  if(!confirm(`ยืนยันตั้งค่าตัวนับของปีภาษี ${yearBE} เป็น เล่มที่ ${bookNo} / เลขที่ล่าสุด ${lastNo}?\n\nกรุณาตรวจสอบประวัติก่อน เพื่อป้องกันเลขซ้ำ`))return;
   const{error}=await sb.from('cert50_number_counter').upsert({year_be:yearBE,book_no:bookNo,last_no:lastNo,per_book:perBook,updated_at:new Date().toISOString()});
   if(error){showToast('รีเซ็ตไม่สำเร็จ: '+error.message,true);return;}
   showToast('ตั้งค่าตัวนับเลขที่เอกสารสำเร็จ');
   loadCurrentCounter();
 }
 
+// ============================================================
+// บันทึกออก / บันทึกแก้ไข
+// ============================================================
 async function issueAndSaveCert(){
   const state=collectFormState();
   if(!validateFormBeforeCert(state))return;
-  if(!state.bookNo||!state.certNo){showToast('กรุณากดปุ่ม "ขอเลขที่เอกสาร" ก่อนบันทึกการออกหนังสือ',true);return;}
-  if(!confirm(`ยืนยันบันทึกการออกหนังสือรับรอง เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} ให้ ${state.companyName}? การบันทึกนี้ถาวรและจะถูกเก็บในประวัติ`))return;
+  const items=getIncomeItemsData();
+  if(!validateIncomeItems(items))return;
+  const operator=(document.getElementById('operatorName').value||'').trim();
 
-  const incomeRows=getIncomeRowsData();
-  if(!validateIncomeRows(incomeRows))return;
-  const totals=recalcIncomeTotals();
+  if(editingIssueId){
+    if(!operator){showToast('กรุณากรอกชื่อผู้แก้ไข ก่อนบันทึกการแก้ไข (ใช้สำหรับตรวจสอบย้อนหลัง)',true);document.getElementById('operatorName').focus();return;}
+    if(!confirm(`ยืนยันบันทึกการแก้ไขฉบับ เล่มที่ ${state.bookNo} เลขที่ ${state.certNo}? การแก้ไขนี้จะถูกบันทึกลงประวัติตรวจสอบ`))return;
+  }else{
+    if(!state.bookNo||!state.certNo){showToast('กรุณากดปุ่ม "ขอเลขที่เอกสาร" ก่อนบันทึกการออกหนังสือ',true);return;}
+    if(!confirm(`ยืนยันบันทึกการออกหนังสือรับรอง เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} ให้ ${state.displayName}? การบันทึกนี้ถาวรและจะถูกเก็บในประวัติ`))return;
+  }
 
-  // เพิ่ม/อัปเดตทะเบียนบริษัทให้เรียบร้อยก่อน แล้วค่อยบันทึกรายการที่ออก
-  const companyPayload={
-    tax_id:state.companyTaxId.replace(/\D/g,''),
-    company_name:state.companyName,
-    address:state.companyAddress,
-    updated_at:new Date().toISOString(),
-  };
+  const agg=aggregateByStatRow(items);
+  const totals=computeTotals(items);
+  const payeeSnapshot=buildPayeeSnapshot(state);
+
+  const companyPayload=buildCompanyPayload(state,state.displayName);
   if(pickedCompanyId)companyPayload.id=pickedCompanyId;
   const{data:companyRow,error:companyErr}=await sb.from('cert50_companies').upsert(companyPayload,{onConflict:'tax_id'}).select().single();
-  if(companyErr){showToast('บันทึกทะเบียนบริษัทไม่สำเร็จ: '+companyErr.message,true);return;}
+  if(companyErr){showToast('บันทึกทะเบียนไม่สำเร็จ: '+companyErr.message,true);return;}
   pickedCompanyId=companyRow.id;
 
-  const issuePayload={
+  const basePayload={
     company_id:companyRow.id,
-    tax_id_snapshot:state.companyTaxId.replace(/\D/g,''),
-    company_name_snapshot:state.companyName,
-    address_snapshot:state.companyAddress,
+    tax_id_snapshot:state.taxId,
+    company_name_snapshot:state.displayName,
+    address_snapshot:state.addressDisplay,
+    payee_snapshot:payeeSnapshot,
     year_be:state.yearBE,
     period_type:state.periodType,
     period_month:state.periodType==='monthly'?state.periodMonth:null,
     pnd_type:state.pndType,
-    book_no:parseInt(state.bookNo),
-    cert_no:parseInt(state.certNo),
     copy_no:state.copyNo,
+    include_duplicate:state.includeDuplicate,
     pay_condition:state.payCondition,
     pay_condition_other:state.payConditionOther||null,
     signer_choice:state.signerChoice,
     cert_day:parseInt(state.certDay)||null,
     cert_month:state.certMonth||null,
     cert_year_be:parseInt(state.certYearVal)||null,
-    income_rows:incomeRows,
+    income_items:items,
     total_income:totals.sumI,
     total_tax:totals.sumT,
-    status:'issued',
   };
-  const{error}=await sb.from('cert50_company_issues').insert(issuePayload);
-  if(error){showToast('บันทึกการออกหนังสือไม่สำเร็จ: '+error.message,true);return;}
 
-  const pages=buildCertPages(state,incomeRows,totals);
-  renderCertPages(pages);
-  showToast('บันทึกการออกหนังสือรับรองสำเร็จ');
+  if(editingIssueId){
+    const{data:beforeRow}=await sb.from('cert50_company_issues').select('*').eq('id',editingIssueId).single();
+    const updatePayload={...basePayload,updated_at:new Date().toISOString(),last_edited_by:operator,last_edited_at:new Date().toISOString(),edited_count:((beforeRow&&beforeRow.edited_count)||0)+1};
+    const{error}=await sb.from('cert50_company_issues').update(updatePayload).eq('id',editingIssueId);
+    if(error){showToast('บันทึกการแก้ไขไม่สำเร็จ: '+error.message,true);return;}
+    await sb.from('cert50_company_issues_audit').insert({issue_id:editingIssueId,changed_by:operator||'ไม่ระบุ',note:'แก้ไขข้อมูลผ่านหน้าออกหนังสือ',before_snapshot:beforeRow||null,after_snapshot:{...(beforeRow||{}),...updatePayload}});
+    showToast('บันทึกการแก้ไขสำเร็จ');
+  }else{
+    const issuePayload={...basePayload,book_no:parseInt(state.bookNo),cert_no:parseInt(state.certNo),status:'issued',created_by:operator||null};
+    const{error}=await sb.from('cert50_company_issues').insert(issuePayload);
+    if(error){showToast('บันทึกการออกหนังสือไม่สำเร็จ: '+error.message,true);return;}
+    showToast('บันทึกการออกหนังสือรับรองสำเร็จ');
+  }
+
+  renderCertPages(buildCertPages(state,agg,totals));
+}
+
+async function loadIssueForEdit(id){
+  const{data,error}=await sb.from('cert50_company_issues').select('*').eq('id',id).single();
+  if(error||!data){showToast('โหลดข้อมูลไม่สำเร็จ',true);return;}
+  editingIssueId=id;
+  const p=data.payee_snapshot||{};
+  applyPayeeFields({
+    payee_type:p.payeeType,tax_id:p.taxId||data.tax_id_snapshot,prefix:p.prefix,first_name:p.firstName,
+    middle_name:p.middleName,last_name:p.lastName,company_name:p.companyName||data.company_name_snapshot,
+    branch:p.branch,house_no:p.houseNo,moo:p.moo,soi:p.soi,junction:p.junction,road:p.road,
+    subdistrict:p.subdistrict,district:p.district,province:p.province,postal_code:p.postalCode,
+  });
+  document.getElementById('companySearch').value=p.companyName||data.company_name_snapshot||'';
+
+  document.getElementById('certYearBE').value=data.year_be;
+  document.getElementById('periodType').value=data.period_type;
+  onPeriodTypeChange();
+  if(data.period_month)document.getElementById('periodMonth').value=data.period_month;
+  document.getElementById('certCopyNo').value=data.copy_no||'1';
+  document.getElementById('includeDuplicate').checked=!!data.include_duplicate;
+  const pndRadio=document.querySelector(`input[name="pndType"][value="${data.pnd_type}"]`);
+  if(pndRadio)pndRadio.checked=true;
+  document.getElementById('cert_d').value=data.cert_day||'';
+  document.getElementById('cert_m').value=data.cert_month||'';
+  document.getElementById('cert_y').value=data.cert_year_be||'';
+  document.getElementById('certPayCondition').value=data.pay_condition||'1';
+  document.getElementById('certPayConditionOther').value=data.pay_condition_other||'';
+  document.getElementById('payConditionOtherWrap').style.display=data.pay_condition==='4'?'flex':'none';
+  document.getElementById('certSignerChoice').value=data.signer_choice||'1';
+  document.getElementById('certBook').value=data.book_no;
+  document.getElementById('certNo').value=data.cert_no;
+
+  document.getElementById('incomeItemsBody').innerHTML='';
+  (data.income_items||[]).forEach(it=>addIncomeItemRow(it));
+  if(!(data.income_items||[]).length)addIncomeItemRow();
+  recalcItemsTotals();
+
+  document.getElementById('editBanner').style.display='flex';
+  document.getElementById('editBannerText').textContent=`✏️ กำลังแก้ไขฉบับ เล่มที่ ${data.book_no} เลขที่ ${data.cert_no} (ออกเมื่อ ${data.cert_day||''}/${data.cert_month||''}/${data.cert_year_be||''}) — กรอกชื่อผู้แก้ไขด้านบนก่อนบันทึก`;
+  document.getElementById('issueSaveBtn').textContent='💾 บันทึกการแก้ไข';
+  document.getElementById('requestNumberBtn').disabled=true;
+  switchTab('issue');
+  showToast('โหลดข้อมูลมาแก้ไขแล้ว');
+}
+function cancelEdit(){
+  editingIssueId=null;
+  document.getElementById('editBanner').style.display='none';
+  document.getElementById('issueSaveBtn').textContent='✅ บันทึกการออกหนังสือ (ถาวร)';
+  document.getElementById('requestNumberBtn').disabled=false;
+  clearCompanyForm();
+  document.getElementById('certBook').value='';
+  document.getElementById('certNo').value='';
+  document.getElementById('incomeItemsBody').innerHTML='';
+  addIncomeItemRow();
+  recalcItemsTotals();
+  showToast('ยกเลิกการแก้ไขแล้ว พร้อมออกฉบับใหม่');
 }
 
 // ============================================================
-// DOWNLOAD PDF — วนสร้างทีละหน้า (รองรับกรณีออกทั้ง 2 ฉบับ = 2 หน้าในไฟล์เดียว)
+// DOWNLOAD PDF — วนสร้างทีละหน้า
 // ============================================================
 function waitForImages(el){const imgs=[...el.querySelectorAll('img')];return Promise.all(imgs.map(img=>img.complete?Promise.resolve():new Promise(res=>{img.onload=res;img.onerror=res;})));}
 async function waitForFonts(){if(document.fonts&&document.fonts.ready){await document.fonts.ready;await new Promise(res=>setTimeout(res,150));}}
@@ -1177,7 +1500,7 @@ async function downloadCertPdf(){
       if(i>0)pdf.addPage();
       pdf.addImage(imgData,'JPEG',7,7,imgW,finalH);
     }
-    const name=document.getElementById('companyName').value||'บริษัท';
+    const name=document.getElementById('companySearch').value||'ผู้ถูกหักภาษี';
     const yearBE=document.getElementById('certYearBE').value||'';
     pdf.save(`50ทวิ_${name}_${yearBE}.pdf`);
     showToast('ดาวน์โหลด PDF สำเร็จ'+(items.length>1?` (${items.length} หน้า)`:''));
@@ -1186,7 +1509,59 @@ async function downloadCertPdf(){
 }
 
 // ============================================================
-// SUMMARY (รายเดือน / รายปี)
+// ประวัติ + แก้ไข + audit log
+// ============================================================
+async function showCompanyHistory(companyId,name,taxId){
+  document.getElementById('companyHistoryCard').style.display='block';
+  document.getElementById('historyCompanyName').textContent=name;
+  document.getElementById('historyCompanyTaxId').textContent=taxId;
+  const{data,error}=await sb.from('cert50_company_issues').select('*').eq('company_id',companyId).order('created_at',{ascending:false});
+  const tbody=document.getElementById('historyTbody');
+  if(error){tbody.innerHTML=`<tr><td colspan="10" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
+  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:#94a3b8">ยังไม่เคยออกหนังสือให้รายนี้</td></tr>`;return;}
+  tbody.innerHTML=data.map(r=>`<tr>
+    <td>${r.cert_day||''}/${r.cert_month||''}/${r.cert_year_be||''}</td>
+    <td>${r.year_be}</td>
+    <td>${r.period_type==='monthly'?('เดือน '+MONTHS_TH[r.period_month]):'รายปี'}</td>
+    <td>${esc((PND_OPTIONS.find(p=>p.v===r.pnd_type)||{}).label||r.pnd_type)}</td>
+    <td>${r.book_no}/${r.cert_no}</td>
+    <td style="text-align:right">${money(r.total_income)}</td>
+    <td style="text-align:right">${money(r.total_tax)}</td>
+    <td><span class="badge ${r.status==='voided'?'badge-voided':'badge-issued'}">${r.status==='voided'?'ยกเลิกแล้ว':'ออกแล้ว'}</span></td>
+    <td style="font-size:11.5px;color:#64748b">${r.edited_count?`แก้ไข ${r.edited_count} ครั้ง<br>${r.last_edited_at?new Date(r.last_edited_at).toLocaleString('th-TH'):''}`:'-'}</td>
+    <td style="white-space:nowrap">
+      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px;margin-bottom:4px" onclick="loadIssueForEdit('${r.id}')">👁️ ดู/แก้ไข</button><br>
+      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px;margin-bottom:4px" onclick="toggleAuditLog('${r.id}',this)">🕘 ประวัติแก้ไข</button><br>
+      ${r.status!=='voided'?`<button class="btn btn-outline" style="font-size:11px;padding:4px 8px" onclick="voidIssue('${r.id}','${companyId}','${esc(name).replace(/'/g,"\\'")}','${esc(taxId)}')">ยกเลิกฉบับนี้</button>`:''}
+    </td>
+  </tr>`).join('');
+}
+async function toggleAuditLog(issueId,btn){
+  const rowId='auditRow_'+issueId;
+  const existing=document.getElementById(rowId);
+  if(existing){existing.remove();btn.textContent='🕘 ประวัติแก้ไข';return;}
+  const{data,error}=await sb.from('cert50_company_issues_audit').select('*').eq('issue_id',issueId).order('changed_at',{ascending:false});
+  const tr=document.createElement('tr');tr.id=rowId;
+  const td=document.createElement('td');td.colSpan=10;
+  if(error){td.innerHTML=`<span style="color:#dc2626">โหลดประวัติไม่สำเร็จ: ${esc(error.message)}</span>`;}
+  else if(!data||!data.length){td.innerHTML=`<span style="color:#94a3b8;font-size:12px">ยังไม่มีการแก้ไข</span>`;}
+  else{
+    td.innerHTML='<div style="font-size:12px;padding:6px 0">'+data.map(a=>`<div style="padding:4px 0;border-bottom:1px solid #f1f5f9">🕘 ${new Date(a.changed_at).toLocaleString('th-TH')} — โดย ${esc(a.changed_by||'ไม่ระบุ')}${a.note?(' — '+esc(a.note)):''}</div>`).join('')+'</div>';
+  }
+  tr.appendChild(td);
+  btn.closest('tr').insertAdjacentElement('afterend',tr);
+  btn.textContent='🔼 ซ่อนประวัติ';
+}
+async function voidIssue(id,companyId,name,taxId){
+  if(!confirm('ยืนยันยกเลิกหนังสือฉบับนี้? เลขที่เอกสารจะถูกบันทึกไว้เป็นประวัติว่ายกเลิกแล้ว (ไม่สามารถนำเลขไปใช้ซ้ำได้)'))return;
+  const{error}=await sb.from('cert50_company_issues').update({status:'voided'}).eq('id',id);
+  if(error){showToast('ยกเลิกไม่สำเร็จ: '+error.message,true);return;}
+  showToast('ยกเลิกฉบับนี้แล้ว');
+  showCompanyHistory(companyId,name,taxId);
+}
+
+// ============================================================
+// SUMMARY (รายเดือน / รายปี) + ส่งออกไฟล์ RD Prep
 // ============================================================
 async function loadSummary(){
   const view=document.getElementById('summaryView').value;
@@ -1198,15 +1573,11 @@ async function loadSummary(){
     const{data,error}=await sb.from('cert50_company_issues').select('*').eq('year_be',yearBE);
     if(error){table.innerHTML=`<tr><td style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
     const issued=(data||[]).filter(r=>r.status!=='voided');
-    const byMonth={};
-    for(let m=1;m<=12;m++)byMonth[m]={count:0,income:0,tax:0};
+    const byMonth={};for(let m=1;m<=12;m++)byMonth[m]={count:0,income:0,tax:0};
     let yearlyBucket={count:0,income:0,tax:0};
     issued.forEach(r=>{
-      if(r.period_type==='monthly'&&r.period_month){
-        byMonth[r.period_month].count++;byMonth[r.period_month].income+=Number(r.total_income||0);byMonth[r.period_month].tax+=Number(r.total_tax||0);
-      }else{
-        yearlyBucket.count++;yearlyBucket.income+=Number(r.total_income||0);yearlyBucket.tax+=Number(r.total_tax||0);
-      }
+      if(r.period_type==='monthly'&&r.period_month){byMonth[r.period_month].count++;byMonth[r.period_month].income+=Number(r.total_income||0);byMonth[r.period_month].tax+=Number(r.total_tax||0);}
+      else{yearlyBucket.count++;yearlyBucket.income+=Number(r.total_income||0);yearlyBucket.tax+=Number(r.total_tax||0);}
     });
     const totalCount=issued.length,totalIncome=issued.reduce((a,r)=>a+Number(r.total_income||0),0),totalTax=issued.reduce((a,r)=>a+Number(r.total_tax||0),0);
     statsWrap.innerHTML=`
@@ -1246,16 +1617,65 @@ function buildSummaryYearSelect(){
   sel.innerHTML=years.map(y=>`<option value="${y}" ${y===nowYearBE?'selected':''}>${y}</option>`).join('');
 }
 
+// ส่งออกไฟล์ .csv คอลัมน์เรียงตามไฟล์ตัวอย่างที่ใช้แปลงเป็น text file นำเข้า RD Prep
+async function exportRdPrepText(){
+  const yearBE=parseInt(document.getElementById('summaryYear').value);
+  const month=parseInt(document.getElementById('exportMonth').value);
+  if(!yearBE||!month){showToast('กรุณาเลือกปีภาษีและเดือนที่จะส่งออก',true);return;}
+  const{data,error}=await sb.from('cert50_company_issues').select('*').eq('year_be',yearBE).eq('period_type','monthly').eq('period_month',month).neq('status','voided');
+  if(error){showToast('ดึงข้อมูลไม่สำเร็จ: '+error.message,true);return;}
+  if(!data||!data.length){showToast('ไม่พบข้อมูลที่ออกแบบรายเดือนของเดือน/ปีที่เลือก',true);return;}
+
+  const header=['ลำดับที่','เลขประจำตัวผู้เสียภาษี','สาขา','คำนำหน้าชื่อ','ชื่อ','ชื่อกลาง','ชื่อสกุล','เลขที่','หมู่ที่','ตรอก/ซอย','แยก','ถนน','แขวง/ตำบล','เขต/อำเภอ','จังหวัด','รหัสไปรษณีย์','วันเดือนปีที่จ่าย','ประเภทเงินได้','อัตราภาษี','จำนวนเงินได้','จำนวนภาษีที่หัก','เงื่อนไข'];
+  const rows=[header];
+  let seq=1;
+  data.forEach(issue=>{
+    const p=issue.payee_snapshot||{};
+    const items=Array.isArray(issue.income_items)?issue.income_items:[];
+    const isIndividual=p.payeeType==='individual';
+    items.forEach(it=>{
+      let dateOut='';
+      if(it.date){const[y,m,d]=it.date.split('-');dateOut=`${Number(y)+543}-${m}-${d}`;}
+      rows.push([
+        seq++,
+        p.taxId||issue.tax_id_snapshot||'',
+        isIndividual?'':(p.branch||''),
+        isIndividual?(p.prefix||''):'',
+        isIndividual?(p.firstName||''):(p.companyName||issue.company_name_snapshot||''),
+        isIndividual?(p.middleName||''):'',
+        isIndividual?(p.lastName||''):'',
+        p.houseNo||'',p.moo||'',p.soi||'',p.junction||'',p.road||'',
+        p.subdistrict||'',p.district||'',p.province||'',p.postalCode||'',
+        dateOut, it.incomeType||'', it.rate!=null?it.rate:'', (it.amount||0).toFixed(2), (it.tax||0).toFixed(2),
+        issue.pay_condition||'1',
+      ]);
+    });
+  });
+  const csv=rows.map(r=>r.map(v=>{
+    const s=String(v==null?'':v);
+    return /[",\n]/.test(s)?'"'+s.replace(/"/g,'""')+'"':s;
+  }).join(',')).join('\r\n');
+  const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url;a.download=`RDprep_${yearBE}_${String(month).padStart(2,'0')}.csv`;
+  document.body.appendChild(a);a.click();a.remove();
+  URL.revokeObjectURL(url);
+  showToast(`ส่งออกไฟล์สำเร็จ (${rows.length-1} รายการ)`);
+}
+
 // ============================================================
 // BOOT
 // ============================================================
 async function boot(){
   startLiveClock();
   buildPndGrid();
-  buildIncomeTable();
   buildMonthSelect();
   buildSummaryYearSelect();
+  togglePayeeType();
   await loadOrgSettings();
+
+  document.getElementById('operatorName').value=localStorage.getItem('cert50_operator_name')||'';
 
   const now=new Date();
   const nowYearBE=now.getFullYear()+543;
@@ -1263,6 +1683,8 @@ async function boot(){
   document.getElementById('cert_d').value=now.getDate();
   document.getElementById('cert_m').value=now.getMonth()+1;
   document.getElementById('cert_y').value=nowYearBE;
+
+  addIncomeItemRow();
 
   document.addEventListener('mousedown',e=>{
     const box=document.getElementById('companySearchResults');
