@@ -951,10 +951,25 @@ async function loadRegistryList(){
   tbody.innerHTML=data.map(c=>`<tr>
     <td>${esc(c.tax_id)}</td><td>${c.payee_type==='individual'?'บุคคลธรรมดา':'นิติบุคคล'}</td><td>${esc(c.company_name)}</td><td>${esc(c.address||'-')}</td>
     <td style="white-space:nowrap">
-      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px" onclick="useCompanyInIssueTab('${c.id}')">ใช้ในแท็บออกหนังสือ</button>
-      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px" onclick="showCompanyHistory('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}','${esc(c.tax_id)}')">ดูประวัติ</button>
+      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px;margin-bottom:4px" onclick="useCompanyInIssueTab('${c.id}')">ใช้ในแท็บออกหนังสือ</button><br>
+      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px;margin-bottom:4px" onclick="showCompanyHistory('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}','${esc(c.tax_id)}')">ดูประวัติ</button><br>
+      <button class="btn btn-danger" style="font-size:11px;padding:4px 8px" onclick="deleteCompany('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}')">🗑️ ลบ</button>
     </td>
   </tr>`).join('');
+}
+async function deleteCompany(id,name){
+  if(!confirm(`ยืนยันลบ "${name}" ออกจากทะเบียน?\n\nการลบนี้ถาวรและกู้คืนไม่ได้`))return;
+  const{error}=await sb.from('cert50_companies').delete().eq('id',id);
+  if(error){
+    if(error.code==='23503'){
+      showToast('ลบไม่ได้ เพราะมีประวัติการออกหนังสือรับรองผูกอยู่กับรายนี้แล้ว (เก็บไว้เพื่อความถูกต้องของประวัติ/การตรวจสอบ) — ถ้าต้องการแก้ไขข้อมูล ให้กด "ใช้ในแท็บออกหนังสือ" แล้วแก้ไขแทนการลบ',true);
+    }else{
+      showToast('ลบไม่สำเร็จ: '+error.message,true);
+    }
+    return;
+  }
+  showToast('ลบรายการสำเร็จ');
+  loadRegistryList();
 }
 function useCompanyInIssueTab(id){
   sb.from('cert50_companies').select('*').eq('id',id).single().then(({data,error})=>{
