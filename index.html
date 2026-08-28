@@ -69,9 +69,9 @@ h1{font-size:22px;color:#1e293b;margin-bottom:6px}
 .toast.error{background:#dc2626}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 .empty-state{text-align:center;padding:40px;color:#94a3b8}
-table.data-table{width:100%;border-collapse:collapse;font-size:13px}
-table.data-table th{background:#f1f5f9;text-align:left;padding:8px 10px;font-size:11.5px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0}
-table.data-table td{padding:8px 10px;border-bottom:1px solid #f1f5f9;vertical-align:top}
+table.data-table{width:100%;border-collapse:collapse;font-size:12px}
+table.data-table th{background:#f1f5f9;text-align:left;padding:6px 8px;font-size:10.5px;text-transform:uppercase;color:#475569;border-bottom:2px solid #e2e8f0}
+table.data-table td{padding:6px 8px;border-bottom:1px solid #f1f5f9;vertical-align:middle}
 table.data-table tr:hover td{background:#f8fafc}
 .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
 .badge-issued{background:#dcfce7;color:#166534}
@@ -445,16 +445,18 @@ table.data-table tr:hover td{background:#f8fafc}
   <div class="tab-panel" id="tabRegistry">
     <div class="card">
       <h3 style="font-size:15px;margin-bottom:12px">🏢 ทะเบียนบริษัท/บุคคลธรรมดา</h3>
-      <div class="form-group" style="margin-bottom:12px;max-width:420px">
+      <div class="form-group" style="margin-bottom:8px;max-width:420px">
         <label>ค้นหา</label>
-        <input type="text" id="registrySearch" placeholder="ชื่อ หรือ เลขผู้เสียภาษี..." oninput="loadRegistryList()">
+        <input type="text" id="registrySearch" placeholder="ชื่อ หรือ เลขผู้เสียภาษี..." oninput="onRegistrySearchInput()">
       </div>
+      <div id="registryCount" style="font-size:12px;color:#64748b;margin-bottom:12px"></div>
       <div style="overflow-x:auto">
-        <table class="data-table">
-          <thead><tr><th>เลขผู้เสียภาษี</th><th>ประเภท</th><th>ชื่อ</th><th>ที่อยู่</th><th></th></tr></thead>
+        <table class="data-table" style="min-width:820px">
+          <thead><tr><th>เลขผู้เสียภาษี</th><th style="white-space:nowrap">ประเภท</th><th>ชื่อ</th><th>ที่อยู่</th><th></th></tr></thead>
           <tbody id="registryTbody"><tr><td colspan="5" style="text-align:center;color:#94a3b8">กำลังโหลด...</td></tr></tbody>
         </table>
       </div>
+      <div id="registryPagination"></div>
     </div>
 
     <div class="card" id="companyHistoryCard" style="display:none">
@@ -940,23 +942,53 @@ function onCompanySearchInput(){
   },250);
 }
 
+let registryPage=1;
+const REGISTRY_PAGE_SIZE=50;
+function onRegistrySearchInput(){registryPage=1;loadRegistryList();}
 async function loadRegistryList(){
   const q=(document.getElementById('registrySearch').value||'').trim();
-  let query=sb.from('cert50_companies').select('*').order('company_name').limit(200);
+  const from=(registryPage-1)*REGISTRY_PAGE_SIZE;
+  const to=from+REGISTRY_PAGE_SIZE-1;
+  let query=sb.from('cert50_companies').select('*',{count:'exact'}).order('company_name').range(from,to);
   if(q)query=query.or(`company_name.ilike.%${q}%,tax_id.ilike.%${q}%`);
-  const{data,error}=await query;
+  const{data,error,count}=await query;
   const tbody=document.getElementById('registryTbody');
-  if(error){tbody.innerHTML=`<tr><td colspan="5" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
-  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#94a3b8">ยังไม่มีรายชื่อในทะเบียน</td></tr>`;return;}
+  const pager=document.getElementById('registryPagination');
+  if(error){tbody.innerHTML=`<tr><td colspan="5" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;pager.innerHTML='';return;}
+  if(!data||!data.length){
+    tbody.innerHTML=`<tr><td colspan="5" style="text-align:center;color:#94a3b8">ไม่พบรายการ</td></tr>`;
+    document.getElementById('registryCount').textContent=q?`ไม่พบรายการที่ตรงกับ "${q}"`:'ยังไม่มีรายชื่อในทะเบียน';
+    pager.innerHTML='';
+    return;
+  }
+  const totalPages=Math.max(1,Math.ceil((count||data.length)/REGISTRY_PAGE_SIZE));
+  document.getElementById('registryCount').textContent=q?`พบ ${count} รายการที่ตรงกับ "${q}"`:`ทั้งหมด ${count} รายการ`;
   tbody.innerHTML=data.map(c=>`<tr>
-    <td>${esc(c.tax_id)}</td><td>${c.payee_type==='individual'?'บุคคลธรรมดา':'นิติบุคคล'}</td><td>${esc(c.company_name)}</td><td>${esc(c.address||'-')}</td>
+    <td>${esc(c.tax_id)}</td><td style="white-space:nowrap">${c.payee_type==='individual'?'บุคคลธรรมดา':'นิติบุคคล'}</td><td>${esc(c.company_name)}</td><td>${esc(c.address||'-')}</td>
     <td style="white-space:nowrap">
-      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px;margin-bottom:4px" onclick="useCompanyInIssueTab('${c.id}')">ใช้ในแท็บออกหนังสือ</button><br>
-      <button class="btn btn-outline" style="font-size:11px;padding:4px 8px;margin-bottom:4px" onclick="showCompanyHistory('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}','${esc(c.tax_id)}')">ดูประวัติ</button><br>
-      <button class="btn btn-danger" style="font-size:11px;padding:4px 8px" onclick="deleteCompany('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}')">🗑️ ลบ</button>
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-outline" style="font-size:11px;padding:3px 8px" title="ใช้ในแท็บออกหนังสือ" onclick="useCompanyInIssueTab('${c.id}')">ใช้</button>
+        <button class="btn btn-outline" style="font-size:11px;padding:3px 8px" title="ดูประวัติ" onclick="showCompanyHistory('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}','${esc(c.tax_id)}')">ดู</button>
+        <button class="btn btn-danger" style="font-size:11px;padding:3px 8px" title="ลบ" onclick="deleteCompany('${c.id}','${esc(c.company_name).replace(/'/g,"\\'")}')">ลบ</button>
+      </div>
     </td>
   </tr>`).join('');
+  renderRegistryPagination(pager,registryPage,totalPages);
 }
+function renderRegistryPagination(container,page,totalPages){
+  if(totalPages<=1){container.innerHTML='';return;}
+  let html='<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:12px">';
+  html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" ${page<=1?'disabled':''} onclick="goRegistryPage(${page-1})">‹ ก่อนหน้า</button>`;
+  const start=Math.max(1,page-2),end=Math.min(totalPages,page+2);
+  if(start>1){html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" onclick="goRegistryPage(1)">1</button>`;if(start>2)html+='<span style="color:#94a3b8">…</span>';}
+  for(let p=start;p<=end;p++){html+=`<button class="btn ${p===page?'btn-primary':'btn-outline'}" style="font-size:12px;padding:4px 10px" onclick="goRegistryPage(${p})">${p}</button>`;}
+  if(end<totalPages){if(end<totalPages-1)html+='<span style="color:#94a3b8">…</span>';html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" onclick="goRegistryPage(${totalPages})">${totalPages}</button>`;}
+  html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" ${page>=totalPages?'disabled':''} onclick="goRegistryPage(${page+1})">ถัดไป ›</button>`;
+  html+=`<span style="font-size:12px;color:#64748b;margin-left:4px">หน้า ${page}/${totalPages}</span>`;
+  html+='</div>';
+  container.innerHTML=html;
+}
+function goRegistryPage(p){registryPage=p;loadRegistryList();}
 async function deleteCompany(id,name){
   if(!confirm(`ยืนยันลบ "${name}" ออกจากทะเบียน?\n\nการลบนี้ถาวรและกู้คืนไม่ได้`))return;
   const{error}=await sb.from('cert50_companies').delete().eq('id',id);
