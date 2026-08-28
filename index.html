@@ -164,10 +164,20 @@ table.data-table tr:hover td{background:#f8fafc}
   <h1>📜 ออกหนังสือรับรองการหักภาษี ณ ที่จ่าย (50 ทวิ)</h1>
   <p class="page-sub">สำหรับออกให้บริษัท/นิติบุคคล/บุคคลธรรมดาคู่ค้าของหน่วยงานย่อย — ใช้ระบบออนไลน์ร่วมกัน รันเลขที่เอกสารไม่ซ้ำแม้ออกพร้อมกันหลายเครื่อง</p>
 
-  <div class="form-group" style="max-width:360px;margin-bottom:16px">
-    <label>ชื่อผู้บันทึก/แก้ไข (เก็บไว้ตรวจสอบย้อนหลัง)</label>
-    <input type="text" id="operatorName" placeholder="ชื่อผู้ปฏิบัติงาน" oninput="localStorage.setItem('cert50_operator_name',this.value)">
+  <div class="form-grid" style="max-width:640px;margin-bottom:16px">
+    <div class="form-group">
+      <label>ชื่อผู้บันทึก/แก้ไข (เก็บไว้ตรวจสอบย้อนหลัง)</label>
+      <input type="text" id="operatorName" placeholder="ชื่อผู้ปฏิบัติงาน" oninput="localStorage.setItem('cert50_operator_name',this.value)">
+    </div>
+    <div class="form-group">
+      <label>หน่วยงานที่ออกเอกสาร</label>
+      <select id="departmentSelect" onchange="onDepartmentChange()">
+        <option value="khon">โขนมูลนิธิ</option>
+        <option value="finance">การเงิน</option>
+      </select>
+    </div>
   </div>
+  <div class="note-box" style="margin-top:-6px">💡 แต่ละหน่วยงานรันเล่มที่/เลขที่แยกจากกันคนละชุดโดยอัตโนมัติ (โขนมูลนิธิ เล่มที่... / การเงิน เล่มที่...) และแท็บสรุปผล/ส่งออกไฟล์สามารถกรองดูแยกหน่วยงานได้ เพื่อยื่นกรมสรรพากรแยกกัน</div>
 
   <div class="tab-bar">
     <button class="tab-btn active" id="tabBtnIssue" onclick="switchTab('issue')">📜 ออกหนังสือรับรอง</button>
@@ -405,6 +415,13 @@ table.data-table tr:hover td{background:#f8fafc}
           <div class="warn-box">⚠️ ใช้เฉพาะกรณีจำเป็นจริงๆ การรีเซ็ตนี้ <b>ไม่ลบ</b>เอกสารที่เคยออกไปแล้ว แต่ถ้าตั้งค่าทับช่วงเลขที่เคยออกไปแล้ว จะทำให้ออกเลขที่ซ้ำกันได้ — กรุณาตรวจสอบประวัติในแท็บ "ทะเบียนบริษัท/ประวัติ" ก่อนทุกครั้ง</div>
           <div class="form-grid cols-4">
             <div class="form-group">
+              <label>หน่วยงาน</label>
+              <select id="resetDepartment" onchange="loadCurrentCounter()">
+                <option value="khon">โขนมูลนิธิ</option>
+                <option value="finance">การเงิน</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label>ปีภาษี (พ.ศ.)</label>
               <input type="number" id="resetYearBE" onchange="loadCurrentCounter()">
             </div>
@@ -464,7 +481,7 @@ table.data-table tr:hover td{background:#f8fafc}
       <p style="font-size:12px;color:#64748b;margin-bottom:12px">เลขผู้เสียภาษี: <span id="historyCompanyTaxId"></span></p>
       <div style="overflow-x:auto">
         <table class="data-table">
-          <thead><tr><th>วันที่ออก</th><th>ปีภาษี</th><th>งวด</th><th>ภ.ง.ด.</th><th>เล่มที่/เลขที่</th><th>รวมเงินที่จ่าย</th><th>ภาษีหัก</th><th>สถานะ</th><th>แก้ไขล่าสุด</th><th></th></tr></thead>
+          <thead><tr><th>วันที่ออก</th><th>หน่วยงาน</th><th>ปีภาษี</th><th>งวด</th><th>ภ.ง.ด.</th><th>เล่มที่/เลขที่</th><th>รวมเงินที่จ่าย</th><th>ภาษีหัก</th><th>สถานะ</th><th>แก้ไขล่าสุด</th><th></th></tr></thead>
           <tbody id="historyTbody"></tbody>
         </table>
       </div>
@@ -477,12 +494,20 @@ table.data-table tr:hover td{background:#f8fafc}
       <h3 style="font-size:15px;margin-bottom:14px">📊 สรุปผลการออกหนังสือรับรอง</h3>
       <div class="form-grid cols-3">
         <div class="form-group">
+          <label>หน่วยงาน</label>
+          <select id="summaryDepartment" onchange="onSummaryFilterChange()">
+            <option value="all">ทั้งหมด (รวม 2 หน่วยงาน)</option>
+            <option value="khon">โขนมูลนิธิ</option>
+            <option value="finance">การเงิน</option>
+          </select>
+        </div>
+        <div class="form-group">
           <label>ปีภาษี (พ.ศ.)</label>
-          <select id="summaryYear" onchange="loadSummary()"></select>
+          <select id="summaryYear" onchange="onSummaryFilterChange()"></select>
         </div>
         <div class="form-group">
           <label>มุมมอง</label>
-          <select id="summaryView" onchange="loadSummary()">
+          <select id="summaryView" onchange="onSummaryFilterChange()">
             <option value="monthly">รายเดือน</option>
             <option value="yearly">รายปี (5 ปีล่าสุด)</option>
           </select>
@@ -499,8 +524,24 @@ table.data-table tr:hover td{background:#f8fafc}
     </div>
 
     <div class="card">
+      <h3 style="font-size:15px;margin-bottom:10px">📋 รายการที่บันทึกไว้ทั้งหมด (ตามปี/หน่วยงานที่เลือกด้านบน)</h3>
+      <div class="form-group" style="max-width:360px;margin-bottom:8px">
+        <label>ค้นหาในรายการนี้</label>
+        <input type="text" id="allIssuesSearch" placeholder="ชื่อ หรือ เลขผู้เสียภาษี..." oninput="onAllIssuesSearchInput()">
+      </div>
+      <div id="allIssuesCount" style="font-size:12px;color:#64748b;margin-bottom:10px"></div>
+      <div style="overflow-x:auto">
+        <table class="data-table" style="min-width:900px">
+          <thead><tr><th>เล่มที่/เลขที่</th><th style="white-space:nowrap">หน่วยงาน</th><th>วันที่ออก</th><th>ชื่อผู้ถูกหักภาษี</th><th>เลขผู้เสียภาษี</th><th>งวด</th><th>เงินที่จ่าย</th><th>ภาษีหัก</th><th>สถานะ</th><th></th></tr></thead>
+          <tbody id="allIssuesTbody"><tr><td colspan="10" style="text-align:center;color:#94a3b8">กำลังโหลด...</td></tr></tbody>
+        </table>
+      </div>
+      <div id="allIssuesPagination"></div>
+    </div>
+
+    <div class="card">
       <h3 style="font-size:15px;margin-bottom:6px">📤 ส่งออกไฟล์สำหรับนำเข้า RD Prep (รายเดือน)</h3>
-      <p style="font-size:12px;color:#64748b;margin-bottom:12px">ส่งออกเป็นไฟล์ .csv คอลัมน์เรียงตามไฟล์ตัวอย่างที่ใช้อยู่ปัจจุบัน (ลำดับที่ / เลขผู้เสียภาษี / สาขา / ชื่อ-สกุล / ที่อยู่แยกฟิลด์ / วันที่จ่าย / ประเภทเงินได้ / อัตราภาษี / จำนวนเงิน / ภาษีหัก / เงื่อนไข) ดึงเฉพาะฉบับที่ออกแบบ "รายเดือน" และยังไม่ถูกยกเลิก — เปิดไฟล์นี้แล้วนำเข้าสู่ขั้นตอนแปลงเป็น text file ที่ใช้อยู่เดิมได้เลย</p>
+      <p style="font-size:12px;color:#64748b;margin-bottom:12px">ส่งออกเป็นไฟล์ .csv คอลัมน์เรียงตามไฟล์ตัวอย่างที่ใช้อยู่ปัจจุบัน (ลำดับที่ / เลขผู้เสียภาษี / สาขา / ชื่อ-สกุล / ที่อยู่แยกฟิลด์ / วันที่จ่าย / ประเภทเงินได้ / อัตราภาษี / จำนวนเงิน / ภาษีหัก / เงื่อนไข) ดึงเฉพาะฉบับที่ออกแบบ "รายเดือน" และยังไม่ถูกยกเลิก ตามหน่วยงานที่เลือกด้านบน (เพื่อยื่นกรมสรรพากรแยกกันแต่ละหน่วยงาน) — เปิดไฟล์นี้แล้วนำเข้าสู่ขั้นตอนแปลงเป็น text file ที่ใช้อยู่เดิมได้เลย</p>
       <div class="form-grid cols-3">
         <div class="form-group">
           <label>เดือนภาษีที่จะส่งออก</label>
@@ -616,6 +657,8 @@ const{createClient}=supabase;const sb=createClient(SUPABASE_URL,SUPABASE_ANON_KE
 
 const MONTHS_TH=['','มกราคม','กุมภาพันธ์','มีนาคม','เมษายน','พฤษภาคม','มิถุนายน','กรกฎาคม','สิงหาคม','กันยายน','ตุลาคม','พฤศจิกายน','ธันวาคม'];
 const ORG_NAME='มูลนิธิส่งเสริมศิลปาชีพ ในสมเด็จพระนางเจ้าสิริกิติ์ พระบรมราชินีนาถ พระบรมราชชนนีพันปีหลวง';
+const DEPARTMENTS=[{key:'khon',label:'โขนมูลนิธิ'},{key:'finance',label:'การเงิน'}];
+function deptLabel(key){return(DEPARTMENTS.find(d=>d.key===key)||{}).label||key||'';}
 const PND_OPTIONS=[
   {v:'1',label:'(1) ภ.ง.ด.1ก'},{v:'2',label:'(2) ภ.ง.ด.1ก พิเศษ'},{v:'3',label:'(3) ภ.ง.ด.2'},
   {v:'4',label:'(4) ภ.ง.ด.3'},{v:'5',label:'(5) ภ.ง.ด.2ก'},{v:'6',label:'(6) ภ.ง.ด.3ก'},{v:'7',label:'(7) ภ.ง.ด.53'},
@@ -689,8 +732,9 @@ function switchTab(name){
     document.getElementById('tabBtn'+n.charAt(0).toUpperCase()+n.slice(1)).classList.toggle('active',n===name);
   });
   if(name==='registry')loadRegistryList();
-  if(name==='summary')loadSummary();
+  if(name==='summary'){allIssuesPage=1;loadSummary();}
 }
+function onSummaryFilterChange(){allIssuesPage=1;loadSummary();}
 
 // ============================================================
 // ORG SETTINGS (ตารางเดียวกับ HRIS ส่วนกลาง — org_settings id=1)
@@ -907,11 +951,13 @@ async function saveCompany(){
   if(!p.taxId||p.taxId.length!==13){showToast('กรุณากรอกเลขผู้เสียภาษี 13 หลักให้ครบ',true);return;}
   if(!displayName){showToast('กรุณากรอกชื่อ/ชื่อนิติบุคคล',true);return;}
   const payload=buildCompanyPayload(p,displayName);
-  if(pickedCompanyId)payload.id=pickedCompanyId;
+  // หมายเหตุ: ไม่ใส่ payload.id — ปล่อยให้ Postgres จับคู่ด้วย tax_id (onConflict) เท่านั้น
+  // เพราะถ้าใส่ id ของรายการเดิมที่เคยเลือกไว้ค้างจากรอบก่อน แล้วเปลี่ยนเลขผู้เสียภาษีเป็นรายใหม่
+  // จะเกิดข้อขัดแย้งกับ primary key ที่ ON CONFLICT (tax_id) ดักไม่ได้ ทำให้บันทึกไม่ผ่าน
   const{data,error}=await sb.from('cert50_companies').upsert(payload,{onConflict:'tax_id'}).select().single();
-  if(error){showToast('บันทึกไม่สำเร็จ: '+error.message,true);return;}
+  if(error){showToast(`บันทึกไม่สำเร็จ (เลขผู้เสียภาษี ${p.taxId} — ${displayName}): ${error.message}`,true);return;}
   pickedCompanyId=data.id;
-  showToast('บันทึกลงทะเบียนสำเร็จ');
+  showToast(`บันทึกลงทะเบียนสำเร็จ: ${displayName}`);
 }
 function buildCompanyPayload(p,displayName){
   return{
@@ -1179,6 +1225,7 @@ function collectFormState(){
     ...p,
     displayName:composeDisplayName(p),
     addressDisplay:composeAddressLine(p),
+    department:document.getElementById('departmentSelect').value,
     yearBE:parseInt(document.getElementById('certYearBE').value)||0,
     periodType:document.getElementById('periodType').value,
     periodMonth:parseInt(document.getElementById('periodMonth').value)||null,
@@ -1244,7 +1291,7 @@ function buildCertHtml(state,agg,totals,effectiveCopyNo,isDuplicate){
         <div>${copyNo==='1'?'☑':'☐'} ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย ใช้แนบพร้อมกับแบบแสดงรายการภาษี)</div>
         <div>${copyNo==='2'?'☑':'☐'} ฉบับที่ 2 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย เก็บไว้เป็นหลักฐาน)</div>
       </div>
-      <div class="cert-booknos">เล่มที่ <u>${esc(state.bookNo||'-')}</u>&nbsp;&nbsp;เลขที่ <u>${esc(state.certNo||'-')}</u></div>
+      <div class="cert-booknos">${esc(deptLabel(state.department))}เล่มที่ <u>${esc(state.bookNo||'-')}</u>&nbsp;&nbsp;เลขที่ <u>${esc(state.certNo||'-')}</u></div>
     </div>
 
     <div class="cert-frame">
@@ -1350,16 +1397,20 @@ function previewCert(){
 // ============================================================
 async function requestCertNumber(){
   const yearBE=parseInt(document.getElementById('certYearBE').value);
+  const department=document.getElementById('departmentSelect').value;
   if(!yearBE){showToast('กรุณาระบุปีภาษีก่อนขอเลขที่เอกสาร',true);return;}
   if(document.getElementById('certBook').value){
     if(!confirm('มีการขอเลขที่เอกสารไปแล้วสำหรับรายการนี้ ต้องการขอเลขใหม่อีกครั้งหรือไม่? (เลขเดิมจะค้างไว้เฉยๆ ไม่ถูกใช้)'))return;
   }
-  const{data,error}=await sb.rpc('get_next_cert50_number',{p_year_be:yearBE,p_per_book:100});
+  const{data,error}=await sb.rpc('get_next_cert50_number',{p_year_be:yearBE,p_department:department,p_per_book:100});
   if(error){showToast('ขอเลขที่เอกสารไม่สำเร็จ: '+error.message,true);return;}
   const row=Array.isArray(data)?data[0]:data;
   document.getElementById('certBook').value=row.book_no;
   document.getElementById('certNo').value=row.cert_no;
-  showToast(`ได้เลขที่เอกสาร เล่มที่ ${row.book_no} เลขที่ ${row.cert_no}`);
+  showToast(`ได้เลขที่เอกสาร ${deptLabel(department)} เล่มที่ ${row.book_no} เลขที่ ${row.cert_no}`);
+}
+function onDepartmentChange(){
+  localStorage.setItem('cert50_department',document.getElementById('departmentSelect').value);
 }
 
 // ============================================================
@@ -1371,26 +1422,29 @@ function toggleResetCounterPanel(){
   p.style.display=willShow?'block':'none';
   if(willShow){
     document.getElementById('resetYearBE').value=document.getElementById('certYearBE').value||(new Date().getFullYear()+543);
+    document.getElementById('resetDepartment').value=document.getElementById('departmentSelect').value;
     loadCurrentCounter();
   }
 }
 async function loadCurrentCounter(){
   const yearBE=parseInt(document.getElementById('resetYearBE').value);
+  const department=document.getElementById('resetDepartment').value;
   const info=document.getElementById('currentCounterInfo');
   if(!yearBE){info.textContent='';return;}
-  const{data,error}=await sb.from('cert50_number_counter').select('*').eq('year_be',yearBE).maybeSingle();
+  const{data,error}=await sb.from('cert50_number_counter').select('*').eq('year_be',yearBE).eq('department',department).maybeSingle();
   if(error){info.textContent='โหลดค่าปัจจุบันไม่สำเร็จ: '+error.message;return;}
-  if(!data){info.textContent=`ปีภาษี ${yearBE} ยังไม่เคยขอเลขที่เอกสารเลย`;return;}
-  info.innerHTML=`ค่าปัจจุบันของปี ${yearBE}: เล่มที่ <b>${data.book_no}</b> · เลขที่ล่าสุด <b>${data.last_no}</b> (ฉบับถัดไปจะได้เลขที่ ${data.last_no+1}) · จำนวนต่อเล่ม <b>${data.per_book}</b>`;
+  if(!data){info.textContent=`${deptLabel(department)} ปีภาษี ${yearBE} ยังไม่เคยขอเลขที่เอกสารเลย`;return;}
+  info.innerHTML=`ค่าปัจจุบันของ ${deptLabel(department)} ปี ${yearBE}: เล่มที่ <b>${data.book_no}</b> · เลขที่ล่าสุด <b>${data.last_no}</b> (ฉบับถัดไปจะได้เลขที่ ${data.last_no+1}) · จำนวนต่อเล่ม <b>${data.per_book}</b>`;
 }
 async function resetCounter(){
   const yearBE=parseInt(document.getElementById('resetYearBE').value);
+  const department=document.getElementById('resetDepartment').value;
   const bookNo=parseInt(document.getElementById('resetBookNo').value)||1;
   const lastNo=parseInt(document.getElementById('resetLastNo').value)||0;
   const perBook=parseInt(document.getElementById('resetPerBook').value)||100;
   if(!yearBE){showToast('กรุณาระบุปีภาษีที่จะรีเซ็ต',true);return;}
-  if(!confirm(`ยืนยันตั้งค่าตัวนับของปีภาษี ${yearBE} เป็น เล่มที่ ${bookNo} / เลขที่ล่าสุด ${lastNo}?\n\nกรุณาตรวจสอบประวัติก่อน เพื่อป้องกันเลขซ้ำ`))return;
-  const{error}=await sb.from('cert50_number_counter').upsert({year_be:yearBE,book_no:bookNo,last_no:lastNo,per_book:perBook,updated_at:new Date().toISOString()});
+  if(!confirm(`ยืนยันตั้งค่าตัวนับของ ${deptLabel(department)} ปีภาษี ${yearBE} เป็น เล่มที่ ${bookNo} / เลขที่ล่าสุด ${lastNo}?\n\nกรุณาตรวจสอบประวัติก่อน เพื่อป้องกันเลขซ้ำ`))return;
+  const{error}=await sb.from('cert50_number_counter').upsert({year_be:yearBE,department,book_no:bookNo,last_no:lastNo,per_book:perBook,updated_at:new Date().toISOString()},{onConflict:'year_be,department'});
   if(error){showToast('รีเซ็ตไม่สำเร็จ: '+error.message,true);return;}
   showToast('ตั้งค่าตัวนับเลขที่เอกสารสำเร็จ');
   loadCurrentCounter();
@@ -1419,9 +1473,9 @@ async function issueAndSaveCert(){
   const payeeSnapshot=buildPayeeSnapshot(state);
 
   const companyPayload=buildCompanyPayload(state,state.displayName);
-  if(pickedCompanyId)companyPayload.id=pickedCompanyId;
+  // ไม่ใส่ id — ให้จับคู่ด้วย tax_id เท่านั้น (เหตุผลเดียวกับ saveCompany ด้านบน)
   const{data:companyRow,error:companyErr}=await sb.from('cert50_companies').upsert(companyPayload,{onConflict:'tax_id'}).select().single();
-  if(companyErr){showToast('บันทึกทะเบียนไม่สำเร็จ: '+companyErr.message,true);return;}
+  if(companyErr){showToast(`บันทึกทะเบียนไม่สำเร็จ (เลขผู้เสียภาษี ${state.taxId} — ${state.displayName}): ${companyErr.message}`,true);return;}
   pickedCompanyId=companyRow.id;
 
   const basePayload={
@@ -1430,6 +1484,7 @@ async function issueAndSaveCert(){
     company_name_snapshot:state.displayName,
     address_snapshot:state.addressDisplay,
     payee_snapshot:payeeSnapshot,
+    department:state.department,
     year_be:state.yearBE,
     period_type:state.periodType,
     period_month:state.periodType==='monthly'?state.periodMonth:null,
@@ -1451,14 +1506,14 @@ async function issueAndSaveCert(){
     const{data:beforeRow}=await sb.from('cert50_company_issues').select('*').eq('id',editingIssueId).single();
     const updatePayload={...basePayload,updated_at:new Date().toISOString(),last_edited_by:operator,last_edited_at:new Date().toISOString(),edited_count:((beforeRow&&beforeRow.edited_count)||0)+1};
     const{error}=await sb.from('cert50_company_issues').update(updatePayload).eq('id',editingIssueId);
-    if(error){showToast('บันทึกการแก้ไขไม่สำเร็จ: '+error.message,true);return;}
+    if(error){showToast(`บันทึกการแก้ไขไม่สำเร็จ (เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} — ${state.displayName}): ${error.message}`,true);return;}
     await sb.from('cert50_company_issues_audit').insert({issue_id:editingIssueId,changed_by:operator||'ไม่ระบุ',note:'แก้ไขข้อมูลผ่านหน้าออกหนังสือ',before_snapshot:beforeRow||null,after_snapshot:{...(beforeRow||{}),...updatePayload}});
     showToast('บันทึกการแก้ไขสำเร็จ');
   }else{
     const issuePayload={...basePayload,book_no:parseInt(state.bookNo),cert_no:parseInt(state.certNo),status:'issued',created_by:operator||null};
     const{error}=await sb.from('cert50_company_issues').insert(issuePayload);
-    if(error){showToast('บันทึกการออกหนังสือไม่สำเร็จ: '+error.message,true);return;}
-    showToast('บันทึกการออกหนังสือรับรองสำเร็จ');
+    if(error){showToast(`บันทึกการออกหนังสือไม่สำเร็จ (เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} — ${state.displayName}): ${error.message}`,true);return;}
+    showToast(`บันทึกการออกหนังสือรับรองสำเร็จ: ${state.displayName}`);
   }
 
   renderCertPages(buildCertPages(state,agg,totals));
@@ -1477,6 +1532,8 @@ async function loadIssueForEdit(id){
   });
   document.getElementById('companySearch').value=p.companyName||data.company_name_snapshot||'';
 
+  document.getElementById('departmentSelect').value=data.department||'khon';
+  document.getElementById('departmentSelect').disabled=true;
   document.getElementById('certYearBE').value=data.year_be;
   document.getElementById('periodType').value=data.period_type;
   onPeriodTypeChange();
@@ -1501,7 +1558,7 @@ async function loadIssueForEdit(id){
   recalcItemsTotals();
 
   document.getElementById('editBanner').style.display='flex';
-  document.getElementById('editBannerText').textContent=`✏️ กำลังแก้ไขฉบับ เล่มที่ ${data.book_no} เลขที่ ${data.cert_no} (ออกเมื่อ ${data.cert_day||''}/${data.cert_month||''}/${data.cert_year_be||''}) — กรอกชื่อผู้แก้ไขด้านบนก่อนบันทึก`;
+  document.getElementById('editBannerText').textContent=`✏️ กำลังแก้ไขฉบับ ${deptLabel(data.department)} เล่มที่ ${data.book_no} เลขที่ ${data.cert_no} (ออกเมื่อ ${data.cert_day||''}/${data.cert_month||''}/${data.cert_year_be||''}) — กรอกชื่อผู้แก้ไขด้านบนก่อนบันทึก`;
   document.getElementById('issueSaveBtn').textContent='💾 บันทึกการแก้ไข';
   document.getElementById('requestNumberBtn').disabled=true;
   switchTab('issue');
@@ -1512,6 +1569,8 @@ function cancelEdit(){
   document.getElementById('editBanner').style.display='none';
   document.getElementById('issueSaveBtn').textContent='✅ บันทึกการออกหนังสือ (ถาวร)';
   document.getElementById('requestNumberBtn').disabled=false;
+  document.getElementById('departmentSelect').disabled=false;
+  document.getElementById('departmentSelect').value=localStorage.getItem('cert50_department')||'khon';
   clearCompanyForm();
   document.getElementById('certBook').value='';
   document.getElementById('certNo').value='';
@@ -1564,10 +1623,11 @@ async function showCompanyHistory(companyId,name,taxId){
   document.getElementById('historyCompanyTaxId').textContent=taxId;
   const{data,error}=await sb.from('cert50_company_issues').select('*').eq('company_id',companyId).order('created_at',{ascending:false});
   const tbody=document.getElementById('historyTbody');
-  if(error){tbody.innerHTML=`<tr><td colspan="10" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
-  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:#94a3b8">ยังไม่เคยออกหนังสือให้รายนี้</td></tr>`;return;}
+  if(error){tbody.innerHTML=`<tr><td colspan="11" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
+  if(!data||!data.length){tbody.innerHTML=`<tr><td colspan="11" style="text-align:center;color:#94a3b8">ยังไม่เคยออกหนังสือให้รายนี้</td></tr>`;return;}
   tbody.innerHTML=data.map(r=>`<tr>
     <td>${r.cert_day||''}/${r.cert_month||''}/${r.cert_year_be||''}</td>
+    <td style="white-space:nowrap">${esc(deptLabel(r.department))}</td>
     <td>${r.year_be}</td>
     <td>${r.period_type==='monthly'?('เดือน '+MONTHS_TH[r.period_month]):'รายปี'}</td>
     <td>${esc((PND_OPTIONS.find(p=>p.v===r.pnd_type)||{}).label||r.pnd_type)}</td>
@@ -1589,7 +1649,7 @@ async function toggleAuditLog(issueId,btn){
   if(existing){existing.remove();btn.textContent='🕘 ประวัติแก้ไข';return;}
   const{data,error}=await sb.from('cert50_company_issues_audit').select('*').eq('issue_id',issueId).order('changed_at',{ascending:false});
   const tr=document.createElement('tr');tr.id=rowId;
-  const td=document.createElement('td');td.colSpan=10;
+  const td=document.createElement('td');td.colSpan=11;
   if(error){td.innerHTML=`<span style="color:#dc2626">โหลดประวัติไม่สำเร็จ: ${esc(error.message)}</span>`;}
   else if(!data||!data.length){td.innerHTML=`<span style="color:#94a3b8;font-size:12px">ยังไม่มีการแก้ไข</span>`;}
   else{
@@ -1613,11 +1673,15 @@ async function voidIssue(id,companyId,name,taxId){
 async function loadSummary(){
   const view=document.getElementById('summaryView').value;
   const yearBE=parseInt(document.getElementById('summaryYear').value);
+  const dept=document.getElementById('summaryDepartment').value;
   const statsWrap=document.getElementById('summaryStats');
   const table=document.getElementById('summaryTable');
+  const deptLbl=dept==='all'?'ทั้งหมด (2 หน่วยงาน)':deptLabel(dept);
 
   if(view==='monthly'){
-    const{data,error}=await sb.from('cert50_company_issues').select('*').eq('year_be',yearBE);
+    let q=sb.from('cert50_company_issues').select('*').eq('year_be',yearBE);
+    if(dept!=='all')q=q.eq('department',dept);
+    const{data,error}=await q;
     if(error){table.innerHTML=`<tr><td style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
     const issued=(data||[]).filter(r=>r.status!=='voided');
     const byMonth={};for(let m=1;m<=12;m++)byMonth[m]={count:0,income:0,tax:0};
@@ -1628,6 +1692,7 @@ async function loadSummary(){
     });
     const totalCount=issued.length,totalIncome=issued.reduce((a,r)=>a+Number(r.total_income||0),0),totalTax=issued.reduce((a,r)=>a+Number(r.total_tax||0),0);
     statsWrap.innerHTML=`
+      <div class="stat-box"><div class="lbl">หน่วยงาน</div><div class="val" style="font-size:16px">${esc(deptLbl)}</div></div>
       <div class="stat-box"><div class="lbl">ปีภาษี</div><div class="val">${yearBE}</div></div>
       <div class="stat-box"><div class="lbl">จำนวนฉบับที่ออก</div><div class="val">${totalCount}</div></div>
       <div class="stat-box"><div class="lbl">รวมเงินที่จ่าย</div><div class="val">${money(totalIncome)}</div></div>
@@ -1640,13 +1705,16 @@ async function loadSummary(){
   }else{
     const nowYearBE=new Date().getFullYear()+543;
     const years=[nowYearBE,nowYearBE-1,nowYearBE-2,nowYearBE-3,nowYearBE-4];
-    const{data,error}=await sb.from('cert50_company_issues').select('year_be,total_income,total_tax,status').in('year_be',years);
+    let q=sb.from('cert50_company_issues').select('year_be,total_income,total_tax,status').in('year_be',years);
+    if(dept!=='all')q=q.eq('department',dept);
+    const{data,error}=await q;
     if(error){table.innerHTML=`<tr><td style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;return;}
     const issued=(data||[]).filter(r=>r.status!=='voided');
     const byYear={};years.forEach(y=>byYear[y]={count:0,income:0,tax:0});
     issued.forEach(r=>{if(byYear[r.year_be]){byYear[r.year_be].count++;byYear[r.year_be].income+=Number(r.total_income||0);byYear[r.year_be].tax+=Number(r.total_tax||0);}});
     const totalCount=issued.length,totalIncome=issued.reduce((a,r)=>a+Number(r.total_income||0),0),totalTax=issued.reduce((a,r)=>a+Number(r.total_tax||0),0);
     statsWrap.innerHTML=`
+      <div class="stat-box"><div class="lbl">หน่วยงาน</div><div class="val" style="font-size:16px">${esc(deptLbl)}</div></div>
       <div class="stat-box"><div class="lbl">ช่วง 5 ปีล่าสุด</div><div class="val">${years[years.length-1]}-${years[0]}</div></div>
       <div class="stat-box"><div class="lbl">จำนวนฉบับที่ออกรวม</div><div class="val">${totalCount}</div></div>
       <div class="stat-box"><div class="lbl">รวมเงินที่จ่าย</div><div class="val">${money(totalIncome)}</div></div>
@@ -1656,6 +1724,7 @@ async function loadSummary(){
     rows+='</tbody>';
     table.innerHTML=rows;
   }
+  loadAllIssuesList();
 }
 function buildSummaryYearSelect(){
   const sel=document.getElementById('summaryYear');
@@ -1664,14 +1733,86 @@ function buildSummaryYearSelect(){
   sel.innerHTML=years.map(y=>`<option value="${y}" ${y===nowYearBE?'selected':''}>${y}</option>`).join('');
 }
 
+// ============================================================
+// รายการที่บันทึกไว้ทั้งหมด (ตามปี/หน่วยงานที่เลือก) — มีเลขที่/บริษัทให้เห็นชัด + แบ่งหน้า
+// ============================================================
+let allIssuesPage=1;
+const ALL_ISSUES_PAGE_SIZE=50;
+function onAllIssuesSearchInput(){allIssuesPage=1;loadAllIssuesList();}
+async function loadAllIssuesList(){
+  const yearBE=parseInt(document.getElementById('summaryYear').value);
+  const dept=document.getElementById('summaryDepartment').value;
+  const q=(document.getElementById('allIssuesSearch').value||'').trim();
+  const from=(allIssuesPage-1)*ALL_ISSUES_PAGE_SIZE;
+  const to=from+ALL_ISSUES_PAGE_SIZE-1;
+  let query=sb.from('cert50_company_issues').select('*',{count:'exact'}).eq('year_be',yearBE);
+  if(dept!=='all')query=query.eq('department',dept);
+  if(q)query=query.or(`company_name_snapshot.ilike.%${q}%,tax_id_snapshot.ilike.%${q}%`);
+  query=query.order('department').order('book_no').order('cert_no').range(from,to);
+  const{data,error,count}=await query;
+  const tbody=document.getElementById('allIssuesTbody');
+  const pager=document.getElementById('allIssuesPagination');
+  if(error){tbody.innerHTML=`<tr><td colspan="10" style="color:#dc2626">โหลดไม่สำเร็จ: ${esc(error.message)}</td></tr>`;pager.innerHTML='';return;}
+  if(!data||!data.length){
+    tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;color:#94a3b8">ไม่พบรายการ</td></tr>`;
+    document.getElementById('allIssuesCount').textContent=q?`ไม่พบรายการที่ตรงกับ "${q}"`:'ยังไม่มีรายการในปี/หน่วยงานนี้';
+    pager.innerHTML='';
+    return;
+  }
+  const totalPages=Math.max(1,Math.ceil((count||data.length)/ALL_ISSUES_PAGE_SIZE));
+  document.getElementById('allIssuesCount').textContent=q?`พบ ${count} รายการที่ตรงกับ "${q}"`:`ทั้งหมด ${count} รายการ`;
+  tbody.innerHTML=data.map(r=>`<tr>
+    <td style="white-space:nowrap">${r.book_no}/${r.cert_no}</td>
+    <td style="white-space:nowrap">${esc(deptLabel(r.department))}</td>
+    <td style="white-space:nowrap">${r.cert_day||''}/${r.cert_month||''}/${r.cert_year_be||''}</td>
+    <td>${esc(r.company_name_snapshot)}</td>
+    <td>${esc(r.tax_id_snapshot)}</td>
+    <td style="white-space:nowrap">${r.period_type==='monthly'?('เดือน '+MONTHS_TH[r.period_month]):'รายปี'}</td>
+    <td style="text-align:right">${money(r.total_income)}</td>
+    <td style="text-align:right">${money(r.total_tax)}</td>
+    <td><span class="badge ${r.status==='voided'?'badge-voided':'badge-issued'}">${r.status==='voided'?'ยกเลิก':'ออกแล้ว'}</span></td>
+    <td style="white-space:nowrap">
+      <div style="display:flex;gap:4px">
+        <button class="btn btn-outline" style="font-size:11px;padding:3px 8px" onclick="loadIssueForEdit('${r.id}')">ดู/แก้ไข</button>
+        ${r.status!=='voided'?`<button class="btn btn-danger" style="font-size:11px;padding:3px 8px" onclick="voidIssueFromList('${r.id}')">ยกเลิก</button>`:''}
+      </div>
+    </td>
+  </tr>`).join('');
+  renderAllIssuesPagination(pager,allIssuesPage,totalPages);
+}
+function renderAllIssuesPagination(container,page,totalPages){
+  if(totalPages<=1){container.innerHTML='';return;}
+  let html='<div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:12px">';
+  html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" ${page<=1?'disabled':''} onclick="goAllIssuesPage(${page-1})">‹ ก่อนหน้า</button>`;
+  const start=Math.max(1,page-2),end=Math.min(totalPages,page+2);
+  if(start>1){html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" onclick="goAllIssuesPage(1)">1</button>`;if(start>2)html+='<span style="color:#94a3b8">…</span>';}
+  for(let p=start;p<=end;p++){html+=`<button class="btn ${p===page?'btn-primary':'btn-outline'}" style="font-size:12px;padding:4px 10px" onclick="goAllIssuesPage(${p})">${p}</button>`;}
+  if(end<totalPages){if(end<totalPages-1)html+='<span style="color:#94a3b8">…</span>';html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" onclick="goAllIssuesPage(${totalPages})">${totalPages}</button>`;}
+  html+=`<button class="btn btn-outline" style="font-size:12px;padding:4px 10px" ${page>=totalPages?'disabled':''} onclick="goAllIssuesPage(${page+1})">ถัดไป ›</button>`;
+  html+=`<span style="font-size:12px;color:#64748b;margin-left:4px">หน้า ${page}/${totalPages}</span>`;
+  html+='</div>';
+  container.innerHTML=html;
+}
+function goAllIssuesPage(p){allIssuesPage=p;loadAllIssuesList();}
+async function voidIssueFromList(id){
+  if(!confirm('ยืนยันยกเลิกหนังสือฉบับนี้? เลขที่เอกสารจะถูกบันทึกไว้เป็นประวัติว่ายกเลิกแล้ว (ไม่สามารถนำเลขไปใช้ซ้ำได้)'))return;
+  const{error}=await sb.from('cert50_company_issues').update({status:'voided'}).eq('id',id);
+  if(error){showToast('ยกเลิกไม่สำเร็จ: '+error.message,true);return;}
+  showToast('ยกเลิกฉบับนี้แล้ว');
+  loadAllIssuesList();
+}
+
 // ส่งออกไฟล์ .csv คอลัมน์เรียงตามไฟล์ตัวอย่างที่ใช้แปลงเป็น text file นำเข้า RD Prep
 async function exportRdPrepText(){
   const yearBE=parseInt(document.getElementById('summaryYear').value);
   const month=parseInt(document.getElementById('exportMonth').value);
+  const dept=document.getElementById('summaryDepartment').value;
   if(!yearBE||!month){showToast('กรุณาเลือกปีภาษีและเดือนที่จะส่งออก',true);return;}
-  const{data,error}=await sb.from('cert50_company_issues').select('*').eq('year_be',yearBE).eq('period_type','monthly').eq('period_month',month).neq('status','voided');
+  let q=sb.from('cert50_company_issues').select('*').eq('year_be',yearBE).eq('period_type','monthly').eq('period_month',month).neq('status','voided');
+  if(dept!=='all')q=q.eq('department',dept);
+  const{data,error}=await q;
   if(error){showToast('ดึงข้อมูลไม่สำเร็จ: '+error.message,true);return;}
-  if(!data||!data.length){showToast('ไม่พบข้อมูลที่ออกแบบรายเดือนของเดือน/ปีที่เลือก',true);return;}
+  if(!data||!data.length){showToast('ไม่พบข้อมูลที่ออกแบบรายเดือนของเดือน/ปี/หน่วยงานที่เลือก',true);return;}
 
   const header=['ลำดับที่','เลขประจำตัวผู้เสียภาษี','สาขา','คำนำหน้าชื่อ','ชื่อ','ชื่อกลาง','ชื่อสกุล','เลขที่','หมู่ที่','ตรอก/ซอย','แยก','ถนน','แขวง/ตำบล','เขต/อำเภอ','จังหวัด','รหัสไปรษณีย์','วันเดือนปีที่จ่าย','ประเภทเงินได้','อัตราภาษี','จำนวนเงินได้','จำนวนภาษีที่หัก','เงื่อนไข'];
   const rows=[header];
@@ -1705,7 +1846,7 @@ async function exportRdPrepText(){
   const blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8;'});
   const url=URL.createObjectURL(blob);
   const a=document.createElement('a');
-  a.href=url;a.download=`RDprep_${yearBE}_${String(month).padStart(2,'0')}.csv`;
+  a.href=url;a.download=`RDprep_${dept}_${yearBE}_${String(month).padStart(2,'0')}.csv`;
   document.body.appendChild(a);a.click();a.remove();
   URL.revokeObjectURL(url);
   showToast(`ส่งออกไฟล์สำเร็จ (${rows.length-1} รายการ)`);
@@ -1723,6 +1864,7 @@ async function boot(){
   await loadOrgSettings();
 
   document.getElementById('operatorName').value=localStorage.getItem('cert50_operator_name')||'';
+  document.getElementById('departmentSelect').value=localStorage.getItem('cert50_department')||'khon';
 
   const now=new Date();
   const nowYearBE=now.getFullYear()+543;
