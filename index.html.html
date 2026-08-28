@@ -222,6 +222,7 @@ table.data-table tr:hover td{background:#f8fafc}
           <select id="certCopyNo">
             <option value="1">ฉบับที่ 1 (แนบแบบแสดงรายการภาษี)</option>
             <option value="2">ฉบับที่ 2 (เก็บไว้เป็นหลักฐาน)</option>
+            <option value="3">ทั้ง 2 ฉบับ (ออกฉบับที่ 1 และ 2 พร้อมกัน)</option>
           </select>
         </div>
       </div>
@@ -265,7 +266,7 @@ table.data-table tr:hover td{background:#f8fafc}
 
     <div class="card">
       <h3 style="font-size:15px;margin-bottom:6px">3. รายการเงินได้ที่จ่ายและภาษีที่หักนำส่ง</h3>
-      <p style="font-size:12px;color:#64748b;margin-bottom:10px">กรอกเฉพาะแถวที่มีการจ่ายจริง แถวที่เว้นว่างจะไม่แสดงจำนวนเงินในเอกสาร (ปุ่มด้านล่างช่วยคำนวณยอดรวมอัตโนมัติ)</p>
+      <p style="font-size:12px;color:#64748b;margin-bottom:10px">กรอกเฉพาะแถวที่มีการจ่ายจริง แถวที่เว้นว่างจะไม่แสดงจำนวนเงินในเอกสาร (ยอดรวมคำนวณอัตโนมัติ) — ถ้ากรอกจำนวนเงินในข้อ 6 "อื่นๆ" ต้องระบุประเภทเงินได้ในช่องที่ปรากฏใต้ข้อ 6 ด้วยเสมอ</p>
       <div style="overflow-x:auto">
         <table class="income-table" id="incomeTable"></table>
       </div>
@@ -302,7 +303,7 @@ table.data-table tr:hover td{background:#f8fafc}
         <button class="btn btn-success" id="downloadCertBtn" onclick="downloadCertPdf()">📥 ดาวน์โหลด PDF (A4)</button>
       </div>
       <div class="cert-preview-wrap">
-        <div class="cert-page" id="cert50Content"></div>
+        <div id="certPagesWrap"></div>
       </div>
     </div>
     <div id="certEmptyState" class="empty-state"><div style="font-size:36px;margin-bottom:8px">📜</div>กรอกข้อมูลด้านบน แล้วกด "ดูตัวอย่างหนังสือ"</div>
@@ -644,8 +645,11 @@ function buildIncomeTable(){
   const t=document.getElementById('incomeTable');
   let html='<thead><tr><th style="width:38%">ประเภทเงินได้พึงประเมิน</th><th style="width:22%">ช่วงเวลาที่จ่าย</th><th style="width:20%">จำนวนเงินที่จ่าย (บาท)</th><th style="width:20%">ภาษีที่หักนำส่ง (บาท)</th></tr></thead><tbody>';
   INCOME_ROWS_DEF.forEach(r=>{
+    const specCell=r.row==='6'
+      ?`<br><input type="text" class="inc-spec" placeholder="ระบุประเภทเงินได้ (บังคับกรอกถ้ามีจำนวนเงินในแถวนี้) เช่น ค่าจ้างทำของครั้งเดียว" style="margin-top:5px;width:100%">`
+      :'';
     html+=`<tr data-row="${r.row}">
-      <td>${esc(r.label)}</td>
+      <td>${esc(r.label)}${specCell}</td>
       <td><input type="text" class="inc-period" placeholder="เช่น ม.ค.-ธ.ค. 2569"></td>
       <td class="amt-cell"><input type="number" step="0.01" class="inc-amount" oninput="recalcIncomeTotals()" placeholder="0.00"></td>
       <td class="amt-cell"><input type="number" step="0.01" class="inc-tax" oninput="recalcIncomeTotals()" placeholder="0.00"></td>
@@ -672,9 +676,22 @@ function getIncomeRowsData(){
     const period=tr.querySelector('.inc-period').value.trim();
     const amount=Number(tr.querySelector('.inc-amount').value||0);
     const tax=Number(tr.querySelector('.inc-tax').value||0);
-    if(period||amount||tax)rows.push({row,label:def.label,period,amount,tax});
+    const specEl=tr.querySelector('.inc-spec');
+    const spec=specEl?specEl.value.trim():'';
+    if(period||amount||tax||spec)rows.push({row,label:def.label,period,amount,tax,spec});
   });
   return rows;
+}
+// แถวข้อ 6 "อื่นๆ (ระบุ)" ถ้ามีจำนวนเงินหรือภาษี ต้องกรอกช่องระบุประเภทเงินได้ด้วยเสมอ
+function validateIncomeRows(rows){
+  const row6=rows.find(r=>r.row==='6');
+  if(row6&&(row6.amount||row6.tax)&&!row6.spec){
+    showToast('กรุณาระบุประเภทเงินได้ในข้อ 6 (อื่นๆ) ก่อนดำเนินการต่อ',true);
+    const tr=document.querySelector('#incomeTable tbody tr[data-row="6"]');
+    if(tr)tr.querySelector('.inc-spec').focus();
+    return false;
+  }
+  return true;
 }
 
 // ============================================================
@@ -856,7 +873,10 @@ function collectFormState(){
   };
 }
 
-function buildCertHtml(state,incomeRows,totals){
+// สร้างเอกสาร 1 หน้า — effectiveCopyNo คือฉบับที่ 1 หรือ 2 ที่จะติ๊กในหน้านั้นจริง
+// (ต่างจาก state.copyNo ที่ผู้ใช้เลือกในฟอร์ม ซึ่งอาจเป็น '3' = ทั้ง 2 ฉบับ)
+function buildCertHtml(state,incomeRows,totals,effectiveCopyNo){
+  const copyNo=effectiveCopyNo||(state.copyNo==='3'?'1':state.copyNo);
   const orgTaxId=orgSettings.org_tax_id||'';
   const orgAddr=orgSettings.org_address||'';
   const signerN=state.signerChoice==='2'?'2':'1';
@@ -871,7 +891,8 @@ function buildCertHtml(state,incomeRows,totals){
   function rowCells(rowKey,defLabel){
     const r=rowsByKey[rowKey];
     if(!r)return `<tr><td>${esc(defLabel)}</td><td></td><td class="amt"></td><td class="amt"></td></tr>`;
-    return `<tr><td>${esc(defLabel)}${rowKey==='6'&&r.period?'':''}</td><td style="text-align:center">${esc(r.period||'')}</td><td class="amt">${money(r.amount)}</td><td class="amt">${money(r.tax)}</td></tr>`;
+    const labelOut=(rowKey==='6'&&r.spec)?`${defLabel} — ${r.spec}`:defLabel;
+    return `<tr><td>${esc(labelOut)}</td><td style="text-align:center">${esc(r.period||'')}</td><td class="amt">${money(r.amount)}</td><td class="amt">${money(r.tax)}</td></tr>`;
   }
 
   const pndLabelsRow=PND_OPTIONS.map(o=>`<label>${state.pndType===o.v?'☑':'☐'} ${esc(o.label)}</label>`).join(' ');
@@ -881,8 +902,8 @@ function buildCertHtml(state,incomeRows,totals){
   return `
     <div class="cert-toprow">
       <div class="cert-copy-labels">
-        <div>${state.copyNo==='1'?'☑':'☐'} ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย ใช้แนบพร้อมกับแบบแสดงรายการภาษี)</div>
-        <div>${state.copyNo==='2'?'☑':'☐'} ฉบับที่ 2 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย เก็บไว้เป็นหลักฐาน)</div>
+        <div>${copyNo==='1'?'☑':'☐'} ฉบับที่ 1 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย ใช้แนบพร้อมกับแบบแสดงรายการภาษี)</div>
+        <div>${copyNo==='2'?'☑':'☐'} ฉบับที่ 2 (สำหรับผู้ถูกหักภาษี ณ ที่จ่าย เก็บไว้เป็นหลักฐาน)</div>
       </div>
       <div class="cert-booknos">เล่มที่ <u>${esc(state.bookNo||'-')}</u>&nbsp;&nbsp;เลขที่ <u>${esc(state.certNo||'-')}</u></div>
     </div>
@@ -960,6 +981,21 @@ function buildCertHtml(state,incomeRows,totals){
     </div>`;
 }
 
+// state.copyNo==='3' (ทั้ง 2 ฉบับ) → คืนเอกสาร 2 หน้า (ฉบับที่ 1 และ 2) ใช้เลขที่เอกสารเดียวกัน
+// กรณีอื่นคืนเอกสาร 1 หน้าตามฉบับที่เลือก
+function buildCertPages(state,incomeRows,totals){
+  if(state.copyNo==='3'){
+    return[buildCertHtml(state,incomeRows,totals,'1'),buildCertHtml(state,incomeRows,totals,'2')];
+  }
+  return[buildCertHtml(state,incomeRows,totals)];
+}
+function renderCertPages(pages){
+  const wrap=document.getElementById('certPagesWrap');
+  wrap.innerHTML=pages.map(html=>`<div class="cert-page cert-page-item">${html}</div>`).join('<div style="height:16px"></div>');
+  document.getElementById('certPreviewSection').style.display='block';
+  document.getElementById('certEmptyState').style.display='none';
+}
+
 function validateFormBeforeCert(state){
   if(!state.companyTaxId||state.companyTaxId.replace(/\D/g,'').length!==13){showToast('กรุณากรอกเลขผู้เสียภาษีบริษัท 13 หลักให้ครบ',true);return false;}
   if(!state.companyName){showToast('กรุณากรอกชื่อบริษัท',true);return false;}
@@ -972,11 +1008,10 @@ function previewCert(){
   const state=collectFormState();
   if(!validateFormBeforeCert(state))return;
   const incomeRows=getIncomeRowsData();
+  if(!validateIncomeRows(incomeRows))return;
   const totals=recalcIncomeTotals();
-  const html=buildCertHtml(state,incomeRows,totals);
-  document.getElementById('cert50Content').innerHTML=html;
-  document.getElementById('certPreviewSection').style.display='block';
-  document.getElementById('certEmptyState').style.display='none';
+  const pages=buildCertPages(state,incomeRows,totals);
+  renderCertPages(pages);
 }
 
 // ============================================================
@@ -1003,6 +1038,7 @@ async function issueAndSaveCert(){
   if(!confirm(`ยืนยันบันทึกการออกหนังสือรับรอง เล่มที่ ${state.bookNo} เลขที่ ${state.certNo} ให้ ${state.companyName}? การบันทึกนี้ถาวรและจะถูกเก็บในประวัติ`))return;
 
   const incomeRows=getIncomeRowsData();
+  if(!validateIncomeRows(incomeRows))return;
   const totals=recalcIncomeTotals();
 
   // เพิ่ม/อัปเดตทะเบียนบริษัทให้เรียบร้อยก่อน แล้วค่อยบันทึกรายการที่ออก
@@ -1043,36 +1079,41 @@ async function issueAndSaveCert(){
   const{error}=await sb.from('cert50_company_issues').insert(issuePayload);
   if(error){showToast('บันทึกการออกหนังสือไม่สำเร็จ: '+error.message,true);return;}
 
-  const html=buildCertHtml(state,incomeRows,totals);
-  document.getElementById('cert50Content').innerHTML=html;
-  document.getElementById('certPreviewSection').style.display='block';
-  document.getElementById('certEmptyState').style.display='none';
+  const pages=buildCertPages(state,incomeRows,totals);
+  renderCertPages(pages);
   showToast('บันทึกการออกหนังสือรับรองสำเร็จ');
 }
 
 // ============================================================
-// DOWNLOAD PDF
+// DOWNLOAD PDF — วนสร้างทีละหน้า (รองรับกรณีออกทั้ง 2 ฉบับ = 2 หน้าในไฟล์เดียว)
 // ============================================================
 function waitForImages(el){const imgs=[...el.querySelectorAll('img')];return Promise.all(imgs.map(img=>img.complete?Promise.resolve():new Promise(res=>{img.onload=res;img.onerror=res;})));}
 async function waitForFonts(){if(document.fonts&&document.fonts.ready){await document.fonts.ready;await new Promise(res=>setTimeout(res,150));}}
 async function downloadCertPdf(){
-  const el=document.getElementById('cert50Content');
+  const items=[...document.querySelectorAll('#certPagesWrap .cert-page-item')];
+  if(!items.length){showToast('ไม่มีตัวอย่างหนังสือให้ดาวน์โหลด กรุณากด "ดูตัวอย่างหนังสือ" ก่อน',true);return;}
   const btn=document.getElementById('downloadCertBtn');
   btn.disabled=true;btn.textContent='⏳ กำลังสร้าง PDF...';
   try{
-    await waitForImages(el);await waitForFonts();
-    const canvas=await html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#ffffff'});
+    await waitForFonts();
     const{jsPDF}=window.jspdf;
     const pdf=new jsPDF({unit:'mm',format:'a4',orientation:'portrait'});
     const pageW=210,pageH=297,imgW=pageW-14;
-    const imgH=canvas.height*imgW/canvas.width;
-    const finalH=Math.min(imgH,pageH-14);
-    const imgData=canvas.toDataURL('image/jpeg',0.95);
-    pdf.addImage(imgData,'JPEG',7,7,imgW,finalH);
+    for(let i=0;i<items.length;i++){
+      const el=items[i];
+      await waitForImages(el);
+      await new Promise(r=>setTimeout(r,30));
+      const canvas=await html2canvas(el,{scale:3,useCORS:true,backgroundColor:'#ffffff'});
+      const imgH=canvas.height*imgW/canvas.width;
+      const finalH=Math.min(imgH,pageH-14);
+      const imgData=canvas.toDataURL('image/jpeg',0.95);
+      if(i>0)pdf.addPage();
+      pdf.addImage(imgData,'JPEG',7,7,imgW,finalH);
+    }
     const name=document.getElementById('companyName').value||'บริษัท';
     const yearBE=document.getElementById('certYearBE').value||'';
     pdf.save(`50ทวิ_${name}_${yearBE}.pdf`);
-    showToast('ดาวน์โหลด PDF สำเร็จ');
+    showToast('ดาวน์โหลด PDF สำเร็จ'+(items.length>1?` (${items.length} หน้า)`:''));
   }catch(err){console.error(err);showToast('สร้าง PDF ไม่สำเร็จ: '+err.message,true);}
   finally{btn.disabled=false;btn.textContent='📥 ดาวน์โหลด PDF (A4)';}
 }
